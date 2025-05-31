@@ -1,0 +1,39 @@
+# Build and Object files
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+
+# IDE/Editor files
+.vs/
+.idea/
+*.swp
+*.swo
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Local development cache
+.nuget/
+nuget.exe
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/
