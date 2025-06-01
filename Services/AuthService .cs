@@ -1,5 +1,6 @@
 ﻿using GestionSolicitud.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace GestionSolicitud.Services
@@ -13,6 +14,13 @@ namespace GestionSolicitud.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Verifica si el usuario existe, si existe, valida que la contraseña ingresada sea valida
+        /// </summary>
+        /// <param name="email">Correo electrónico del usuario.</param>
+        /// <param name="password">Contraseña en texto plano (se hashea internamente).</param>
+        /// <returns>Un objeto que indica si el login fue exitoso y el token generado.</returns>
+        /// <exception cref="UnauthorizedAccessException">Lanzada si las credenciales son incorrectas.</exception>
         public async Task<(bool Success, string Message, Flusuario Usuario, List<string> Roles)> ValidateUserAsync(string email, string password)
         {
             try
@@ -34,9 +42,10 @@ namespace GestionSolicitud.Services
                     return (false, "Contraseña incorrecta", null, null);
                 }
 
-                // Obtener roles del usuario
+                // Obtener roles del usuario solo los nombres
                 var roles = usuario.IdRols.Select(r=>r.NombreRol).ToList();
 
+                //Los retorna
                 return (true, "Login exitoso", usuario, roles);
 
             }
@@ -46,8 +55,10 @@ namespace GestionSolicitud.Services
             }
         }
 
+       
         public string HashPassword(string password)
         {
+            //*Metodo para encriptar contraseñas, metodo muy sencillo, de igual forma se puede utiliza librerias para esto
             using (var rng = RandomNumberGenerator.Create())
             {
                 byte[] salt = new byte[16];
@@ -66,7 +77,10 @@ namespace GestionSolicitud.Services
 
         public bool VerifyPassword(string password, string hashedPassword)
         {
-            /*byte[] hashBytes = Convert.FromBase64String(hashedPassword);
+            
+            /*
+             * Desencritacion sencilla, aunque se pueden utilizar librerias para esto
+             * byte[] hashBytes = Convert.FromBase64String(hashedPassword);
             byte[] salt = new byte[16];
             Array.Copy(hashBytes, 0, salt, 0, 16);
 

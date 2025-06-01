@@ -22,13 +22,13 @@ namespace GestionSolicitud.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")] //agregar el nombre del rol en base a los roles definidos en la base de datos
         public IActionResult Privacy()
         {
             return View();
         }
         
-        [Authorize(Roles = "Solicitante")]
+        [Authorize(Roles = "Administrador,Solicitante")] // Para N cantidad de roles
         public IActionResult PrivacyUser()
         {
             return View();

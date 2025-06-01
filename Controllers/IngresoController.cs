@@ -10,6 +10,7 @@ namespace GestionSolicitud.Controllers
 {
     public class IngresoController : Controller
     {
+        //Heredamos el servicio de autenticación previamente definido
         private readonly IAuthService _authService;
         public IngresoController(IAuthService authService)
         {
@@ -36,6 +37,7 @@ namespace GestionSolicitud.Controllers
 
                 if (result.Success)
                 {
+                    //Agrega los valores a las cookies, nombre, email, id
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, result.Usuario.IdUsuario.ToString()),
@@ -43,7 +45,7 @@ namespace GestionSolicitud.Controllers
                         new Claim(ClaimTypes.Email, result.Usuario.Email)
                     };
 
-                    // Agregar roles como claims
+                    // Agregar roles 
                     foreach (var role in result.Roles)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, role));
@@ -53,25 +55,20 @@ namespace GestionSolicitud.Controllers
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = model.RememberMe,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24)
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(24) //Tiempo de expiracion de la cookie
                     };
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                    // Redirigir a la URL de retorno o al Home
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    //Retorna la vista a la vista de inicio
+                    ViewBag.inicioSesion = true;
+                    return RedirectToAction("Index", "Home");
+
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, result.Message);
+                    ModelState.AddModelError(string.Empty, result.Message); //Retorna los errores a la vista
                 }
             }
 
@@ -90,86 +87,6 @@ namespace GestionSolicitud.Controllers
         public IActionResult AccesoDenegado()
         {
             return View();
-        }
-
-
-        /// <summary>
-        /// ///////////////////////////////////////////////////////////////////////////////////////////
-        /// </summary>
-        /// <returns></returns>
-        // GET: IngresoController
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: IngresoController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: IngresoController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: IngresoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: IngresoController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: IngresoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: IngresoController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: IngresoController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
