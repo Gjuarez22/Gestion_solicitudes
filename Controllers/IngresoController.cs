@@ -38,9 +38,9 @@ namespace GestionSolicitud.Controllers
                 {
                     var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.NameIdentifier, result.Usuario.Id.ToString()),
-                        new Claim(ClaimTypes.Name, result.Usuario.Nomnbre),
-                        new Claim(ClaimTypes.Email, result.Usuario.Usuario1)
+                        new Claim(ClaimTypes.NameIdentifier, result.Usuario.IdUsuario.ToString()),
+                        new Claim(ClaimTypes.Name, result.Usuario.Nombre),
+                        new Claim(ClaimTypes.Email, result.Usuario.Email)
                     };
 
                     // Agregar roles como claims

@@ -6,20 +6,21 @@ namespace GestionSolicitud.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly GestionSContext _context;
+        private readonly DbFlujosTestContext _context;
 
-        public AuthService(GestionSContext context)
+        public AuthService(DbFlujosTestContext context)
         {
             _context = context;
         }
 
-        public async Task<(bool Success, string Message, Usuario Usuario, List<string> Roles)> ValidateUserAsync(string email, string password)
+        public async Task<(bool Success, string Message, Flusuario Usuario, List<string> Roles)> ValidateUserAsync(string email, string password)
         {
             try
             {
                 // Buscar usuario por email
-                var usuario = await _context.Usuarios
-                    .Include(u => u.IdrolNavigation)
+                var usuario = await _context.Flusuarios
+                    .Where(x => x.Email == email)
+                    .Include(u => u.IdRols)
                     .FirstOrDefaultAsync();
 
                 if (usuario == null)
@@ -28,18 +29,15 @@ namespace GestionSolicitud.Services
                 }
 
                 // Verificar contraseña
-                if (!VerifyPassword(password, usuario.Clave))
+                if (!VerifyPassword(password, usuario.Contrasena))
                 {
                     return (false, "Contraseña incorrecta", null, null);
                 }
 
                 // Obtener roles del usuario
-                var rol = usuario.IdrolNavigation.Nombre;
-                var roles = new List<string> { rol };
+                var roles = usuario.IdRols.Select(r=>r.NombreRol).ToList();
 
                 return (true, "Login exitoso", usuario, roles);
-
-                this.HashPassword("asasdasd");
 
             }
             catch (Exception ex)

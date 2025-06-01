@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<GestionSContext>(options =>
+builder.Services.AddDbContext<DbFlujosTestContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("bdLocal")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();

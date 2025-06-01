@@ -22,13 +22,13 @@ namespace GestionSolicitud.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrador")]
         public IActionResult Privacy()
         {
             return View();
         }
         
-        [Authorize(Roles = "Admin,user")]
+        [Authorize(Roles = "Solicitante")]
         public IActionResult PrivacyUser()
         {
             return View();
