@@ -28,7 +28,7 @@ namespace GestionSolicitud.Controllers
             return View();
         }
         
-        [Authorize(Roles = "Administrador,Solicitante")] // Para N cantidad de roles
+        [Authorize(Roles = "Solicitante")] // Para N cantidad de roles
         public IActionResult PrivacyUser()
         {
             return View();

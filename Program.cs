@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DbFlujosTestContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("bdLocal")));
 
+//Servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Configurar autenticación con cookies

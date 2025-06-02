@@ -27,7 +27,7 @@ namespace GestionSolicitud.Services
             {
                 // Buscar usuario por email
                 var usuario = await _context.Flusuarios
-                    .Where(x => x.Email == email)
+                    .Where(x => x.Email == email) //Se debe de buscar por username
                     .Include(u => u.IdRols)
                     .FirstOrDefaultAsync();
 
