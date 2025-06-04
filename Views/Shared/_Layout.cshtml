@@ -7,33 +7,61 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/GestionSolicitud.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        @if (User.Identity.IsAuthenticated)
-        {
-            @Html.Partial("_navBarHome")
-        }
-        else
-        {
-            @Html.Partial("_navBarLogin")
-        }
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-           
-            @RenderBody()
-        </main>
-    </div>
+    <link rel="stylesheet" href="~/css/sideBar.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="~/lib/datatable/datatables.min.css" rel="stylesheet">
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - GestionSolicitud - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/datatable/datatables.min.js"></script>
+    <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
+</head>
+<body>
+    @if(!User.Identity.IsAuthenticated){
+       
+    }
+   
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Overlay para cerrar el sidebar en móviles -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <!-- Sidebar -->
+        @Html.Partial("_sideBar")
+        
+        <!-- Contenido principal con sidebar -->
+        <main role="main" class="main-content" id="mainContent">
+            <header>
+                @Html.Partial("_navBarHome")
+            </header>
+            
+            <div class="container-fluid px-4">
+                @RenderBody()
+            </div>
+
+          
+        </main>
+          @*<footer class="border-top footer text-muted">
+                <div class="container">
+                    &copy; 2025 - GestionSolicitud - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
+            </footer>*@
+        <script src="~/js/sideBar.js"></script>
+    }
+    else
+    {
+        <header>
+            @Html.Partial("_navBarLogin")
+        </header>
+        <main role="main" class="container">
+            @RenderBody()
+        </main> 
+
+         <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2025 - GestionSolicitud - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+    }
 </body>
 </html>
