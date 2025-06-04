@@ -1,0 +1,89 @@
+﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
+
+@{
+    ViewData["Title"] = "Solicitudes";
+}
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover" id ="tabla-solicitudes">
+    <thead>
+        <tr>
+            <th>
+                
+            </th>
+            <th>
+                ID Solicitud
+            </th>
+            <th>
+                tipo de solicitud
+            </th>
+            <th>
+                Creada
+            </th>
+            <th>
+                Numero de documento
+            </th>
+            <th>
+                Comentarios
+            </th>
+            <th>
+                Solicitante
+            </th>
+            <th>
+                Área
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.IdSolicitud
+            </td>
+            <td>
+                @item.Tipo_Solicitud
+            </td>
+            <td>
+                @item.Creado
+            </td>
+            <td>
+                @item.DocNum
+            </td>
+            <td>
+                @item.Comentarios
+            </td>
+            <td>
+                @item.Comentarios
+            </td>
+            <td>
+                @item.Nombre
+            </td>
+            <td>
+                @item.NombreArea
+            </td>
+            <td>
+                @item.NombreStatus
+            </td>
+            <td>
+                <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Acciones
+                </button>
+                <ul class="dropdown-menu dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+
+<script src="~/js/FlSolicitudes.js"></script>
