@@ -21,13 +21,13 @@ namespace GestionSolicitud.Services
         /// <param name="password">Contraseña en texto plano (se hashea internamente).</param>
         /// <returns>Un objeto que indica si el login fue exitoso y el token generado.</returns>
         /// <exception cref="UnauthorizedAccessException">Lanzada si las credenciales son incorrectas.</exception>
-        public async Task<(bool Success, string Message, Flusuario Usuario, List<string> Roles)> ValidateUserAsync(string email, string password)
+        public async Task<(bool Success, string Message, Flusuario Usuario, List<string> Roles)> ValidateUserAsync(string user, string password)
         {
             try
             {
                 // Buscar usuario por email
                 var usuario = await _context.Flusuarios
-                    .Where(x => x.Email == email) //Se debe de buscar por username
+                    .Where(x => x.Usuario== user) //Se debe de buscar por username
                     .Include(u => u.IdRols)
                     .FirstOrDefaultAsync();
 

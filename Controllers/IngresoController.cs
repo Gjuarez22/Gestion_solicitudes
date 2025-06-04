@@ -33,7 +33,7 @@ namespace GestionSolicitud.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _authService.ValidateUserAsync(model.Email, model.Password);
+                var result = await _authService.ValidateUserAsync(model.usuario, model.Password);
 
                 if (result.Success)
                 {
