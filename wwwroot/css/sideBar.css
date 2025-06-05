@@ -1,0 +1,238 @@
+/* Overlay para móviles */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+.sidenav {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100vh;
+    background-color: #2c3e50;
+    color: white;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+.sidenav.active {
+    left: 0;
+}
+
+.logo {
+    padding: 20px;
+    text-align: center;
+    background-color: #34495e;
+    border-bottom: 1px solid #3a5169;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo h2 {
+    color: #3498db;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.toggle-btn {
+    background: #3498db;
+    border: none;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: #2980b9;
+    transform: scale(1.1);
+}
+
+.toggle-btn:active {
+    transform: scale(0.95);
+}
+
+.nav-section {
+    padding: 10px 0;
+}
+
+.nav-item-sibebar {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #ecf0f1;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+}
+
+.nav-item-sibebar:hover {
+    background-color: #34495e;
+    border-left-color: #3498db;
+    padding-left: 25px;
+    color: white;
+    text-decoration: none;
+}
+
+.nav-item-sibebar.active {
+    background-color: #3498db;
+    border-left-color: #2980b9;
+    color: white;
+}
+
+.nav-item-sibebar i {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.nav-separator {
+    height: 1px;
+    background-color: #3a5169;
+    margin: 15px 20px;
+}
+
+.main-content {
+    margin-left: 0;
+    min-height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+/* Iconos usando CSS */
+.fas.fa-table::before { content: "📊"; }
+.icon-search::before { content: "🔍"; }
+.icon-settings::before { content: "⚙️"; }
+.icon-file::before { content: "📄"; }
+.icon-chart::before { content: "📈"; }
+.icon-tools::before { content: "🔧"; }
+.icon-users::before { content: "👥"; }
+.icon-folder::before { content: "📁"; }
+
+/* Responsive para desktop */
+@media (min-width: 769px) {
+    .toggle-btn {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin-left: auto;
+    }
+
+    .sidenav {
+        position: fixed;
+        left: 0;
+        width: 250px;
+    }
+
+    .sidenav.collapsed {
+        width: 60px;
+    }
+
+    .sidenav.collapsed .logo h2 {
+        opacity: 0;
+        font-size: 0;
+    }
+
+    .sidenav.collapsed .nav-item-sibebar span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    .main-content {
+        margin-left: 250px;
+    }
+
+    .main-content.collapsed {
+        margin-left: 60px;
+    }
+
+  
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+}
+
+/* Responsive para tablet */
+@media (max-width: 768px) and (min-width: 481px) {
+    .toggle-btn {
+        top: 20px;
+        left: 20px;
+    }
+}
+
+/* Responsive para móvil */
+@media (max-width: 480px) {
+    .toggle-btn {
+        width: 40px;
+        height: 40px;
+        top: 10px;
+        left: 10px;
+    }
+
+    .sidenav {
+        width: 280px;
+        left: -280px;
+    }
+
+    .main-content {
+        padding-top: 70px;
+    }
+
+    .nav-item-sibebar {
+        padding: 18px 20px;
+        font-size: 16px;
+    }
+
+    .nav-item-sibebar i {
+        font-size: 18px;
+        margin-right: 20px;
+    }
+}
+
+/* Ajustes adicionales para Bootstrap */
+.container-fluid {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+/* Asegurar que el contenido no se superponga con el header */
+body {
+    padding-top: 0;
+}
+
+/* Si tu header tiene una altura fija, ajusta este valor */
+@media (min-width: 769px) {
+
+}

@@ -2,6 +2,7 @@ using GestionSolicitud.Models;
 using GestionSolicitud.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddDbContext<DbFlujosTestContext>(options =>
 
 //Servicios
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Agrega esto antes de builder.Build():
+builder.Services.AddControllersWithViews()
+    .AddRazorRuntimeCompilation(); 
 
 // Configurar autenticación con cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

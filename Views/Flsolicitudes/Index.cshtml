@@ -1,0 +1,135 @@
+﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
+
+@{
+    ViewData["Title"] = "Solicitudes";
+}
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover" id ="tabla-solicitudes">
+    <thead>
+        <tr>
+            <th>
+                
+            </th>
+            <th>
+                ID Solicitud
+            </th>
+            <th>
+                tipo de solicitud
+            </th>
+            <th>
+                Creada
+            </th>
+            <th>
+                Numero de documento
+            </th>
+            <th>
+                Comentarios
+            </th>
+            <th>
+                Solicitante
+            </th>
+            <th>
+                Área
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.tipoDeSolicitud
+            </td>
+            <td>
+                @item.Creada
+            </td>
+            <td>
+                @item.DocNum
+            </td>
+            <td>
+                @item.Comentarios
+            </td>
+            <td>
+                @item.Comentarios
+            </td>
+            <td>
+                @item.Solicitante
+            </td>
+            <td>
+                @item.Area
+            </td>
+            <td>
+                @item.Estado
+            </td>
+            <td>
+                <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Acciones
+                </button>
+                <ul class="dropdown-menu dropdown-menu">
+                    @*TODOS TIENEN ACCESO A ESTOS BOTONES*@
+                    <li><a class="dropdown-item verDetalle" data-id="@item.Id" >Ver Detalle</a></li>
+                    <li><a class="dropdown-item" href="#">Ver auditoria</a></li>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <li><a class="dropdown-item" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
+                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                    
+                    }else if(User.IsInRole("Solicitante")){
+                     
+                        <li><a class="dropdown-item" href="#">Recibido</a></li>
+                    
+                    }else if(User.IsInRole("Autorizador")){
+                    
+                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
+                    
+                    }else if(User.IsInRole("EncargadoBodega")){
+
+                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                    }
+                </ul>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+
+@************************************************MODAL********************************************@
+<!-- Modal -->
+<div class="modal fade" id="modalGeneral" tabindex="-1" aria-labelledby="modalGeneralLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered modal-xl"> @**Aca se ajusta el tamaño del modal**@
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalGeneraltitulo">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="cuerpoModal">
+        @*********************CUERPO DEL MODAL*******************************@
+
+            
+        @*********************FIN DEL MODAL*******************************@
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" hide class="btn btn-primary" id="btnGuardarModal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@**************************************************FIN MODAL****************************************@
+
+
+
+<script src="~/js/FlSolicitudes.js"></script>

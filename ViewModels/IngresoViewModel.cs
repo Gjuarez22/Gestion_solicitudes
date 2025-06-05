@@ -6,7 +6,7 @@ namespace GestionSolicitud.ViewModels
     {
         [Required(ErrorMessage = "El email es requerido")]
         //[EmailAddress(ErrorMessage = "Formato de email inválido")]
-        public string Email { get; set; }
+        public string usuario { get; set; }
 
         [Required(ErrorMessage = "La contraseña es requerida")]
         [DataType(DataType.Password)]

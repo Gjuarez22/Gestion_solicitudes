@@ -33,7 +33,7 @@ namespace GestionSolicitud.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _authService.ValidateUserAsync(model.Email, model.Password);
+                var result = await _authService.ValidateUserAsync(model.usuario, model.Password);
 
                 if (result.Success)
                 {
@@ -42,7 +42,9 @@ namespace GestionSolicitud.Controllers
                     {
                         new Claim(ClaimTypes.NameIdentifier, result.Usuario.IdUsuario.ToString()),
                         new Claim(ClaimTypes.Name, result.Usuario.Nombre),
-                        new Claim(ClaimTypes.Email, result.Usuario.Email)
+                        new Claim(ClaimTypes.Email, result.Usuario.Email),
+                        new Claim(ClaimTypes.Role, result.Usuario.IdRols.Select(r=>r.NombreRol).FirstOrDefault().ToString()),
+
                     };
 
                     // Agregar roles 

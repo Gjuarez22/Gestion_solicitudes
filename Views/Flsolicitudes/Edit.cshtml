@@ -1,0 +1,74 @@
+﻿@model GestionSolicitud.Models.Flsolicitud
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Flsolicitud</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IdSolicitud" />
+            <div class="form-group">
+                <label asp-for="Fecha" class="control-label"></label>
+                <input asp-for="Fecha" class="form-control" />
+                <span asp-validation-for="Fecha" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdSolicitante" class="control-label"></label>
+                <select asp-for="IdSolicitante" class="form-control" asp-items="ViewBag.IdSolicitante"></select>
+                <span asp-validation-for="IdSolicitante" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdTipoSolicitud" class="control-label"></label>
+                <select asp-for="IdTipoSolicitud" class="form-control" asp-items="ViewBag.IdTipoSolicitud"></select>
+                <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdArea" class="control-label"></label>
+                <select asp-for="IdArea" class="form-control" asp-items="ViewBag.IdArea"></select>
+                <span asp-validation-for="IdArea" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdStatus" class="control-label"></label>
+                <select asp-for="IdStatus" class="form-control" asp-items="ViewBag.IdStatus"></select>
+                <span asp-validation-for="IdStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DocNumErp" class="control-label"></label>
+                <input asp-for="DocNumErp" class="form-control" />
+                <span asp-validation-for="DocNumErp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comentarios" class="control-label"></label>
+                <input asp-for="Comentarios" class="form-control" />
+                <span asp-validation-for="Comentarios" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cancelada" class="control-label"></label>
+                <input asp-for="Cancelada" class="form-control" />
+                <span asp-validation-for="Cancelada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reenviada" class="control-label"></label>
+                <input asp-for="Reenviada" class="form-control" />
+                <span asp-validation-for="Reenviada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

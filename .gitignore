@@ -37,3 +37,5 @@ bld/
 [Ll]ogs/
 
 # Visual Studio cache/
+appsettings.json
+Models/DbFlujosTestContext.cs
