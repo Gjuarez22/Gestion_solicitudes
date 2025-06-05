@@ -10,7 +10,7 @@ $(document).ready(function() {
         console.log(id);
         let html;
 
-
+        //Deberia de exisitr una funcion para que solo llame las vistas y no repetir este codigo, implementarlo luego, pasa lo mismo para envio de datos
         try {
             await $.ajax({
             url: 'Details/'+id,
