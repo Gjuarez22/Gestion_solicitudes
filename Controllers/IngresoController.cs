@@ -43,7 +43,7 @@ namespace GestionSolicitud.Controllers
                         new Claim(ClaimTypes.NameIdentifier, result.Usuario.IdUsuario.ToString()),
                         new Claim(ClaimTypes.Name, result.Usuario.Nombre),
                         new Claim(ClaimTypes.Email, result.Usuario.Email),
-                        new Claim(ClaimTypes.Role, result.Usuario.IdRols.Select(r=>r.IdRol).FirstOrDefault().ToString()),
+                        new Claim(ClaimTypes.Role, result.Usuario.IdRols.Select(r=>r.NombreRol).FirstOrDefault().ToString()),
 
                     };
 

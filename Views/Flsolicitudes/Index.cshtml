@@ -44,13 +44,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @item.IdSolicitud
+                @item.Id
             </td>
             <td>
-                @item.Tipo_Solicitud
+                @item.tipoDeSolicitud
             </td>
             <td>
-                @item.Creado
+                @item.Creada
             </td>
             <td>
                 @item.DocNum
@@ -62,22 +62,42 @@
                 @item.Comentarios
             </td>
             <td>
-                @item.Nombre
+                @item.Solicitante
             </td>
             <td>
-                @item.NombreArea
+                @item.Area
             </td>
             <td>
-                @item.NombreStatus
+                @item.Estado
             </td>
             <td>
                 <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Acciones
                 </button>
                 <ul class="dropdown-menu dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    @*TODOS TIENEN ACCESO A ESTOS BOTONES*@
+                    <li><a class="dropdown-item verDetalle" data-id="@item.Id" >Ver Detalle</a></li>
+                    <li><a class="dropdown-item" href="#">Ver auditoria</a></li>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <li><a class="dropdown-item" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
+                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                    
+                    }else if(User.IsInRole("Solicitante")){
+                     
+                        <li><a class="dropdown-item" href="#">Recibido</a></li>
+                    
+                    }else if(User.IsInRole("Autorizador")){
+                    
+                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
+                    
+                    }else if(User.IsInRole("EncargadoBodega")){
+
+                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                    }
                 </ul>
             </td>
         </tr>
@@ -85,5 +105,31 @@
     </tbody>
 </table>
 </div>
+
+@************************************************MODAL********************************************@
+<!-- Modal -->
+<div class="modal fade" id="modalGeneral" tabindex="-1" aria-labelledby="modalGeneralLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered modal-xl"> @**Aca se ajusta el tamaño del modal**@
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalGeneraltitulo">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="cuerpoModal">
+        @*********************CUERPO DEL MODAL*******************************@
+
+            
+        @*********************FIN DEL MODAL*******************************@
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" hide class="btn btn-primary" id="btnGuardarModal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@**************************************************FIN MODAL****************************************@
+
+
 
 <script src="~/js/FlSolicitudes.js"></script>

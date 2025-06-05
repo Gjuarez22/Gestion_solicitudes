@@ -1,72 +1,140 @@
 ﻿@model GestionSolicitud.Models.Flsolicitud
 
-@{
-    ViewData["Title"] = "Details";
+<div class="container-fluid">
+        <!-- Encabezado -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Información Básica</h6>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Id Solicitud :</dt>
+                            <dd class="col-sm-7">@Model.IdSolicitud.ToString()</dd>
+                            <dt class="col-sm-5">Fecha:</dt>
+                            <dd class="col-sm-7">@Model.Fecha?.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            <dt class="col-sm-5">Solicitante:</dt>
+                            <dd class="col-sm-7">@Model.IdSolicitanteNavigation?.Nombre</dd>
+
+                            <dt class="col-sm-5">Área:</dt>
+                            <dd class="col-sm-7">@Model.IdAreaNavigation?.NombreArea</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Estado</h6>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Tipo:</dt>
+                            <dd class="col-sm-7">@Model.IdTipoSolicitudNavigation?.NombreTipoSolicitud</dd>
+
+                            <dt class="col-sm-5">Estado:</dt>
+                            <dd class="col-sm-7">
+                                <span class="badge bg-@GetStatusColor(Model.IdStatus)">
+                                    @Model.IdStatusNavigation?.NombreStatus
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-5">Documento ERP:</dt>
+                            <dd class="col-sm-7">@(Model.DocNumErp ?? "N/A")</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles adicionales -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Detalles Adicionales</h6>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Comentarios:</label>
+                            <div class="border p-3 rounded bg-light">
+                                @(string.IsNullOrEmpty(Model.Comentarios) ? "Sin comentarios" : Model.Comentarios)
+                            </div>
+                        </div>
+
+                        <!-- Flags de estado -->
+                        <div class="d-flex gap-3">
+                            <span class="badge bg-@(Model.Cancelada == true ? "danger" : "secondary")">
+                                @(Model.Cancelada == true ? "Cancelada" : "No cancelada")
+                            </span>
+                            <span class="badge bg-@(Model.Reenviada == true ? "warning text-dark" : "secondary")">
+                                @(Model.Reenviada == true ? "Reenviada" : "No reenviada")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalles específicos (si existen) -->
+        @if (Model.FlsolicitudDets != null && Model.FlsolicitudDets.Any())
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-3 text-muted">Detalle de la Solicitud</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover" id="tablaDetalles">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Cantidad</th>
+                                            <th>Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalle in Model.FlsolicitudDets)
+                                        {
+                                            <tr>
+                                                <td>@detalle.IdProducto</td>
+                                                <td>@detalle.Cantidad</td>
+                                                <td>@(detalle.ComentariosDet ?? "N/A")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+@functions {
+    string GetStatusColor(string status)
+    {
+        switch (status)
+        {
+            case "PENDIENTE": return "info";
+            case "APROBADA": return "success";
+            case "RECHAZADA": return "danger";
+            case "CANCELADA": return "dark";
+            case "EN_PROCESO": return "warning text-dark";
+            default: return "secondary";
+        }
+    }
 }
 
-<h1>Details</h1>
+<script>
 
-<div>
-    <h4>Flsolicitud</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DocNumErp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DocNumErp)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Comentarios)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Comentarios)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cancelada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cancelada)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Reenviada)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Reenviada)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdAreaNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdAreaNavigation.IdArea)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdSolicitanteNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdSolicitanteNavigation.IdUsuario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdStatusNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdStatusNavigation.IdStatus)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdTipoSolicitudNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdTipoSolicitudNavigation.IdTipoSolicitud)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.IdSolicitud">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+$(document).ready(function() {
+    $("#tablaDetalles").DataTable({
+        "pageLength": 3,  // Muestra 5 registros por página 
+        "lengthChange": false,    // Oculta el dropdown para cambiar cantidad
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        }
+    })
+});
+
+</script>

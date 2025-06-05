@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GestionSolicitud.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GestionSolicitud.Controllers
 {
+    [Authorize]
     public class FlsolicitudesController : Controller
     {
         private readonly DbFlujosTestContext _context;
@@ -26,7 +28,10 @@ namespace GestionSolicitud.Controllers
             var claimRol = User.FindFirst(ClaimTypes.Role)?.Value;
 
             int.TryParse(claimIdUsuario, out int idUsuario);
-            int.TryParse(claimRol, out int idRol);
+            var idRol = _context.Flrols
+                .Where(r => r.NombreRol == claimRol)
+                .Select(r=>r.IdRol)
+                .FirstOrDefault();
 
             var spListadoSolicitudes = _context.spListadoSoliciturdes(idUsuario,idRol);
                 
@@ -46,13 +51,14 @@ namespace GestionSolicitud.Controllers
                 .Include(f => f.IdSolicitanteNavigation)
                 .Include(f => f.IdStatusNavigation)
                 .Include(f => f.IdTipoSolicitudNavigation)
+                .Include(f => f.FlsolicitudDets)
                 .FirstOrDefaultAsync(m => m.IdSolicitud == id);
             if (flsolicitud == null)
             {
                 return NotFound();
             }
 
-            return View(flsolicitud);
+            return PartialView(flsolicitud);
         }
 
         // GET: Flsolicitudes/Create
