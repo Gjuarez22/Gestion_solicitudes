@@ -19,10 +19,6 @@
     @await RenderSectionAsync("Scripts", required: false)
 </head>
 <body>
-    @if(!User.Identity.IsAuthenticated){
-       
-    }
-   
     @if (User.Identity.IsAuthenticated)
     {
         <!-- Overlay para cerrar el sidebar en móviles -->
