@@ -1,22 +1,23 @@
 ﻿@model GestionSolicitud.ViewModels.IngresoViewModel
 @{
-    ViewData["Title"] = "Iniciar Sesión";
+    ViewData["Title"] = "INICIO DE SESION";
 }
 
 <div class="row">
     <div class="col-md-4 offset-md-4">
+        <img src="~/img/logo-indufoam-web.png" class="img-fluids" width="420" height="300" />
         <h2>@ViewData["Title"]</h2>
         <form asp-action="Login" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
 
             <div class="form-group mb-3">
-                <label asp-for="usuario" class="control-label"></label>
+                <label asp-for="usuario" class="control-label">Usuario</label>
                 <input asp-for="usuario" class="form-control" />
                 <span asp-validation-for="usuario" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Password" class="control-label"></label>
+                <label asp-for="Password" class="control-label">contraseña</label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
