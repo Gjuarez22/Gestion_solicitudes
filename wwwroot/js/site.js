@@ -1,7 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿
 function mostrarSwalCarga(titulo) {
     Swal.fire({
         title: titulo,
@@ -13,4 +10,58 @@ function mostrarSwalCarga(titulo) {
         allowEscapeKey: false, // Evita que el usuario cierre el modal presionando ESC
         showConfirmButton: false // Oculta el botón de confirmación
     });
+}
+
+async function obtenerVista(url){
+    try {
+        await $.ajax({
+            url: url,
+            method: 'GET'
+        })
+        .done((respuesta) => {
+            html = respuesta;
+        })
+        .fail((jqXHR, errorThrown) => {
+            console.error('Error en la petición:', {
+                status: jqXHR.status,
+                message: errorThrown,
+                response: jqXHR.responseJSON
+            });
+            html = '<div/>Estamos teniendo problemas para mostrar esta vista :c <div>';
+        })
+        .always(() => {
+            console.log('Petición completada');
+        });
+    } catch (error) {
+        
+    }
+
+    return html;
+}
+
+async function EnviarDatos(url){
+    try {
+        await $.ajax({
+            url: url,
+            method: 'GET'
+        })
+        .done((respuesta) => {
+            html = respuesta;
+        })
+        .fail((jqXHR, errorThrown) => {
+            console.error('Error en la petición:', {
+                status: jqXHR.status,
+                message: errorThrown,
+                response: jqXHR.responseJSON
+            });
+            html = '<div/>Estamos teniendo problemas para mostrar esta vista :c <div>';
+        })
+        .always(() => {
+            console.log('Petición completada');
+        });
+    } catch (error) {
+        
+    }
+
+    return html;
 }
