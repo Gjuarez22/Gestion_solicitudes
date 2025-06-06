@@ -19,4 +19,5 @@ main {
 /* Footer siempre abajo */
 footer {
     margin-top: auto;
+    background-color: #3498db;
 }

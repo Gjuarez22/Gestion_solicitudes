@@ -23,7 +23,7 @@
     left: -250px;
     width: 250px;
     height: 100vh;
-    background-color: #2c3e50;
+    background-color: #e3f2fd;
     color: white;
     overflow-y: auto;
     box-shadow: 2px 0 10px rgba(0,0,0,0.3);
@@ -38,8 +38,8 @@
 .logo {
     padding: 20px;
     text-align: center;
-    background-color: #34495e;
-    border-bottom: 1px solid #3a5169;
+    background-color: #e3f2fd;
+    border-bottom: 1px solid #e3f2fd;
     position: relative;
     display: flex;
     align-items: center;
@@ -90,14 +90,14 @@
     align-items: center;
     padding: 15px 20px;
     text-decoration: none;
-    color: #ecf0f1;
+    color: #3498db;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
     position: relative;
 }
 
 .nav-item-sibebar:hover {
-    background-color: #34495e;
+    background-color: #3498db;
     border-left-color: #3498db;
     padding-left: 25px;
     color: white;
@@ -235,4 +235,40 @@ body {
 /* Si tu header tiene una altura fija, ajusta este valor */
 @media (min-width: 769px) {
 
+}
+
+
+/************************** modificacion de login ************************/
+
+.col-md-4 {
+    background-color: #ffffff;
+    padding: 32px;
+    border: 1px solid #ded6c2;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 25px;
+    color: #020202;
+    margin-bottom: 24px;
+}
+
+
+
+/*********************** BOTONES *******************************/
+
+.btn {
+   color: #fff;
+  background-color: #3498db;
+  border-color: #2980b9; 
+}
+
+.btn-link
+{
+   color: #3498db;
+  background-color: transparent;
+  border-color: transparent; 
 }
