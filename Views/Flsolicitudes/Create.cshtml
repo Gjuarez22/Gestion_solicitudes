@@ -1,59 +1,120 @@
 ﻿@model GestionSolicitud.Models.Flsolicitud
 
-@{
-    ViewData["Title"] = "Create";
-}
+<div class="container mt-4">
+    <h2>Nueva Solicitud</h2>
+    <hr />
 
-<h1>Create</h1>
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="IdSolicitud" />
 
-<h4>Flsolicitud</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdSolicitante" class="control-label"></label>
-                <select asp-for="IdSolicitante" class ="form-control" asp-items="ViewBag.IdSolicitante"></select>
+        <div class="row g-3">
+            <!-- Fecha -->
+            <div class="col-md-6">
+                <label asp-for="Fecha" class="form-label">Fecha</label>
+                <input asp-for="Fecha" type="datetime-local" class="form-control" />
+                <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdTipoSolicitud" class="control-label"></label>
-                <select asp-for="IdTipoSolicitud" class ="form-control" asp-items="ViewBag.IdTipoSolicitud"></select>
+
+            <!-- Solicitante 
+            <div class="col-md-6">
+                <label asp-for="IdSolicitante" class="form-label">Solicitante</label>
+                <select asp-for="IdSolicitante" class="form-select" asp-items="ViewBag.IdSolicitante">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="IdSolicitante" class="text-danger"></span>
+            </div>-->
+
+            <!-- Tipo Solicitud -->
+            <div class="col-md-6">
+                <label asp-for="IdTipoSolicitud" class="form-label">Tipo de Solicitud</label>
+                <select asp-for="IdTipoSolicitud" class="form-select" asp-items="ViewBag.tipoSolicitud">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdArea" class="control-label"></label>
-                <select asp-for="IdArea" class ="form-control" asp-items="ViewBag.IdArea"></select>
+
+            <!-- Área -->
+            <div class="col-md-6">
+                <label asp-for="IdArea" class="form-label">Área</label>
+                <select asp-for="IdArea" class="form-select" asp-items="ViewBag.areas">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="IdArea" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="IdStatus" class="control-label"></label>
-                <select asp-for="IdStatus" class ="form-control" asp-items="ViewBag.IdStatus"></select>
+
+            <!-- Status -->
+            <div class="col-md-6">
+                <label asp-for="IdStatus" class="form-label">Estado</label>
+                <select asp-for="IdStatus" class="form-select" asp-items="ViewBag.estados">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="IdStatus" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DocNumErp" class="control-label"></label>
+
+            <!-- DocNumERP -->
+            <div class="col-md-6">
+                <label asp-for="DocNumErp" class="form-label">Número Documento ERP</label>
                 <input asp-for="DocNumErp" class="form-control" />
                 <span asp-validation-for="DocNumErp" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Comentarios" class="control-label"></label>
-                <input asp-for="Comentarios" class="form-control" />
+
+            <!-- Comentarios -->
+            <div class="col-12">
+                <label asp-for="Comentarios" class="form-label">Comentarios</label>
+                <textarea asp-for="Comentarios" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Comentarios" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Reenviada" class="control-label"></label>
-                <input asp-for="Reenviada" class="form-control" />
-                <span asp-validation-for="Reenviada" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            <!-- Checkboxes -->
+            <div class="col-md-6">
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" />
+                    <label class="form-check-label">Cancelada</label>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-check form-switch mt-3">
+                    <input  class="form-check-input" type="checkbox" />
+                    <label class="form-check-label">Reenviada</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        // Validación del lado del cliente
+        (() => {
+            'use strict'
+
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 }
