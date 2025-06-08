@@ -1,4 +1,7 @@
-﻿namespace GestionSolicitud.ViewModels
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
+namespace GestionSolicitud.ViewModels
 {
     public class SolicitudViewModel
     {
@@ -42,12 +45,6 @@
         public SelectList? TiposSolicitud { get; set; }
         public SelectList? Estados { get; set; }
 
-        public void InicializarSelectLists(ApplicationDbContext context)
-        {
-            Areas = new SelectList(context.Flareas.ToList(), "IdArea", "Nombre");
-            Solicitantes = new SelectList(context.Flusuarios.ToList(), "IdUsuario", "NombreCompleto");
-            TiposSolicitud = new SelectList(context.FltipoSolicituds.ToList(), "IdTipoSolicitud", "Nombre");
-            Estados = new SelectList(context.Flstatuses.ToList(), "IdStatus", "Nombre");
-        }
+      
     }
 }

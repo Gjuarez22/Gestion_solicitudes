@@ -1,4 +1,4 @@
-﻿@model GestionSolicitud.Models.Flsolicitud
+﻿@model GestionSolicitud.ViewModels.SolicitudViewModel
 
 <div class="container mt-4">
     <h2>Nueva Solicitud</h2>
@@ -8,26 +8,10 @@
         <input type="hidden" asp-for="IdSolicitud" />
 
         <div class="row g-3">
-            <!-- Fecha -->
-            <div class="col-md-6">
-                <label asp-for="Fecha" class="form-label">Fecha</label>
-                <input asp-for="Fecha" type="datetime-local" class="form-control" />
-                <span asp-validation-for="Fecha" class="text-danger"></span>
-            </div>
-
-            <!-- Solicitante 
-            <div class="col-md-6">
-                <label asp-for="IdSolicitante" class="form-label">Solicitante</label>
-                <select asp-for="IdSolicitante" class="form-select" asp-items="ViewBag.IdSolicitante">
-                    <option value="">-- Seleccionar --</option>
-                </select>
-                <span asp-validation-for="IdSolicitante" class="text-danger"></span>
-            </div>-->
-
             <!-- Tipo Solicitud -->
             <div class="col-md-6">
                 <label asp-for="IdTipoSolicitud" class="form-label">Tipo de Solicitud</label>
-                <select asp-for="IdTipoSolicitud" class="form-select" asp-items="ViewBag.tipoSolicitud">
+                <select asp-for="IdTipoSolicitud" class="form-select" asp-items="Model.TiposSolicitud">
                     <option value="">-- Seleccionar --</option>
                 </select>
                 <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
@@ -36,7 +20,7 @@
             <!-- Área -->
             <div class="col-md-6">
                 <label asp-for="IdArea" class="form-label">Área</label>
-                <select asp-for="IdArea" class="form-select" asp-items="ViewBag.areas">
+                <select asp-for="IdArea" class="form-select" asp-items="Model.Areas">
                     <option value="">-- Seleccionar --</option>
                 </select>
                 <span asp-validation-for="IdArea" class="text-danger"></span>
@@ -45,7 +29,7 @@
             <!-- Status -->
             <div class="col-md-6">
                 <label asp-for="IdStatus" class="form-label">Estado</label>
-                <select asp-for="IdStatus" class="form-select" asp-items="ViewBag.estados">
+                <select asp-for="IdStatus" class="form-select" asp-items="Model.Estados">
                     <option value="">-- Seleccionar --</option>
                 </select>
                 <span asp-validation-for="IdStatus" class="text-danger"></span>
@@ -63,21 +47,6 @@
                 <label asp-for="Comentarios" class="form-label">Comentarios</label>
                 <textarea asp-for="Comentarios" class="form-control" rows="3"></textarea>
                 <span asp-validation-for="Comentarios" class="text-danger"></span>
-            </div>
-
-            <!-- Checkboxes -->
-            <div class="col-md-6">
-                <div class="form-check form-switch mt-3">
-                    <input class="form-check-input" type="checkbox" />
-                    <label class="form-check-label">Cancelada</label>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-check form-switch mt-3">
-                    <input  class="form-check-input" type="checkbox" />
-                    <label class="form-check-label">Reenviada</label>
-                </div>
             </div>
         </div>
 
