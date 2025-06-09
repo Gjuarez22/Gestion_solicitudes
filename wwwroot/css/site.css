@@ -21,3 +21,10 @@ footer {
     margin-top: auto;
     background-color: #3498db;
 }
+
+body {
+    padding: 0 !important;
+}
+.hide{
+    display: none;
+}

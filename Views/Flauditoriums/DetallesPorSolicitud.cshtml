@@ -1,0 +1,55 @@
+﻿@model GestionSolicitud.Models.Flauditorium
+
+
+
+<div class="container">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Registro #@Model.IdAuditoria</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">
+                    Id de la auditoria
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdAuditoria)
+                </dd>
+
+                <dt class="col-sm-3">
+                    Id de la solicitud
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.IdSolicitud)
+                </dd>
+
+                <dt class="col-sm-3">
+                        Estado
+                </dt>
+                <dd class="col-sm-9">
+                    @ViewBag.estado.NombreStatus
+                </dd>
+
+                <dt class="col-sm-3">
+                    Fecha de la auditoria
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Fecha)
+                </dd>
+
+                <dt class="col-sm-3">
+                    Usuario
+                </dt>
+                <dd class="col-sm-9">
+                    @ViewBag.usuario.Nombre
+                </dd>
+
+                <dt class="col-sm-3">
+                    Notas
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Notas)
+                </dd>
+            </dl>
+        </div>
+</div>

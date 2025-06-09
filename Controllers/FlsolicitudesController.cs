@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using GestionSolicitud.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using GestionSolicitud.ViewModels;
+using System.Linq.Expressions;
 
 namespace GestionSolicitud.Controllers
 {
@@ -64,30 +66,41 @@ namespace GestionSolicitud.Controllers
         // GET: Flsolicitudes/Create
         public IActionResult Create()
         {
-            ViewData["IdArea"] = new SelectList(_context.Flareas, "IdArea", "IdArea");
-            ViewData["IdSolicitante"] = new SelectList(_context.Flusuarios, "IdUsuario", "IdUsuario");
-            ViewData["IdStatus"] = new SelectList(_context.Flstatuses, "IdStatus", "IdStatus");
-            ViewData["IdTipoSolicitud"] = new SelectList(_context.FltipoSolicituds, "IdTipoSolicitud", "IdTipoSolicitud");
-            return View();
+            var areas = _context.Flareas.ToList();
+            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+            var estados = _context.Flstatuses.ToList();
+
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+            solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+
+            return View(solicitudVm);
         }
 
-        // POST: Flsolicitudes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdSolicitud,Fecha,IdSolicitante,IdTipoSolicitud,IdArea,IdStatus,DocNumErp,Comentarios,Cancelada,Reenviada")] Flsolicitud flsolicitud)
+        public async Task<IActionResult> Create( SolicitudViewModel flsolicitud)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(flsolicitud);
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); //Obtener el id de la sesión actual
+                
+                var solicitud = new Flsolicitud();
+                solicitud.Fecha =  DateTime.Now;
+                solicitud.IdSolicitante = userId;
+                solicitud.IdTipoSolicitud = flsolicitud.IdTipoSolicitud;
+                solicitud.IdStatus = flsolicitud.IdStatus;
+                solicitud.DocNumErp = flsolicitud.DocNumErp;
+                solicitud.Comentarios = flsolicitud.Comentarios;
+                solicitud.IdArea = flsolicitud.IdArea;
+                solicitud.Cancelada = false;
+                
+                _context.Add(solicitud);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdArea"] = new SelectList(_context.Flareas, "IdArea", "IdArea", flsolicitud.IdArea);
-            ViewData["IdSolicitante"] = new SelectList(_context.Flusuarios, "IdUsuario", "IdUsuario", flsolicitud.IdSolicitante);
-            ViewData["IdStatus"] = new SelectList(_context.Flstatuses, "IdStatus", "IdStatus", flsolicitud.IdStatus);
-            ViewData["IdTipoSolicitud"] = new SelectList(_context.FltipoSolicituds, "IdTipoSolicitud", "IdTipoSolicitud", flsolicitud.IdTipoSolicitud);
             return View(flsolicitud);
         }
 
@@ -190,6 +203,32 @@ namespace GestionSolicitud.Controllers
         private bool FlsolicitudExists(int id)
         {
             return _context.Flsolicituds.Any(e => e.IdSolicitud == id);
+        }
+
+
+        [Authorize(Roles = "Administrador")]
+        [HttpPost]
+        public async Task<JsonResult> Recibio([FromBody] int id)
+        {
+            //id de la solicitud
+            await _context.Database.ExecuteSqlRawAsync("EXEC sp_RecibidoSolicitante @p0", id); //Ejecuta el sp de recibioSolcitiante
+            //Ya que no devuvle ninguna tala, no se realizo un modelo para la tabla, de lo contrario hay que hacerlo
+
+            return Json(new { success = true, message = "Estado de solicitud: "+id+" actualizado correctamente." });
+        }
+
+        [Authorize(Roles = "Administrador")]
+        [HttpPost]
+        public async Task<JsonResult> Autorizar([FromBody] int id)
+        {
+            //id de la solicitud
+            var solicitud = await _context.Flsolicituds
+                .FindAsync(id); //Buscamos la solicuitud para obtener el di del estado
+
+            await _context.Database.ExecuteSqlRawAsync("EXEC spAutorizacion @IdSolicitud = {0}, @Estatus = {1}",
+                id,solicitud.IdStatus); //Ejecuta el sp de spAutorizacion
+
+            return Json(new { success = true, message = "Solicitud: "+id+" autorizada correctamente." });
         }
     }
 }

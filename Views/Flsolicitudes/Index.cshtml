@@ -77,21 +77,21 @@
                 <ul class="dropdown-menu dropdown-menu">
                     @*TODOS TIENEN ACCESO A ESTOS BOTONES*@
                     <li><a class="dropdown-item verDetalle" data-id="@item.Id" >Ver Detalle</a></li>
-                    <li><a class="dropdown-item" href="#">Ver auditoria</a></li>
+                    <li><a class="dropdown-item verAuditoria" data-id="@item.Id" href="#">Ver auditoria</a></li>
                     @if (User.IsInRole("Administrador"))
                     {
-                        <li><a class="dropdown-item" href="#">Recibido</a></li>
-                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id"  href="#">Autorizar</a></li>
                         <li><a class="dropdown-item" href="#">Rechazar</a></li>
                         <li><a class="dropdown-item" href="#">Entregar</a></li>
                     
                     }else if(User.IsInRole("Solicitante")){
                      
-                        <li><a class="dropdown-item" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
                     
                     }else if(User.IsInRole("Autorizador")){
                     
-                        <li><a class="dropdown-item" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id"  href="#">Autorizar</a></li>
                         <li><a class="dropdown-item" href="#">Rechazar</a></li>
                     
                     }else if(User.IsInRole("EncargadoBodega")){
@@ -122,8 +122,8 @@
         @*********************FIN DEL MODAL*******************************@
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" hide class="btn btn-primary" id="btnGuardarModal">Guardar</button>
+        <button type="button" class="btn btn-secondary cerrarModal" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary hide" id="btnGuardarModal">Guardar</button>
       </div>
     </div>
   </div>
