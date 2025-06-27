@@ -44,6 +44,7 @@ namespace GestionSolicitud.ViewModels
         public SelectList? Solicitantes { get; set; }
         public SelectList? TiposSolicitud { get; set; }
         public SelectList? Estados { get; set; }
+        public SelectList? Maquinas { get; set; }
 
       
     }

@@ -1,0 +1,131 @@
+@model GestionSolicitud.ViewModels.SolicitudViewModel
+<style>
+   
+      
+      
+</style>
+
+<div class="container mt-4">
+    <h2>Nueva Solicitud</h2>
+    <hr />
+
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="IdSolicitud" />
+
+        <div class="row g-3 align-items-end">
+            <!-- Tipo Solicitud -->
+            <div class="col-6">
+                <label class="form-label">Código de producto</label>
+                <select class="form-select " id="productoSelect" ></select>
+                <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
+            </div>
+
+            <div class="col-4">
+                <label class="form-label">Cantidad</label>
+                <input type="text" name="" id="" class="form-control">
+                <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
+            </div>
+            
+            <div class="col-2">
+                <label class="btn btn-success">Agregar</label>
+            </div>
+            
+            <!-- Status -->
+          <div>
+            <table class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+            </table>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        // Validación del lado del cliente
+        (() => {
+            'use strict'
+
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+
+        
+        $(document).ready(function(){
+            $('#productoSelect').select2({
+                ajax: {
+                    url: '/busquedaItem', // URL del controlador
+                    dataType: 'json',
+                    delay: 250, // Retraso para evitar muchas peticiones
+                    data: function (params) {
+                        return {
+                            term: params.term, // término de búsqueda
+                            page: params.page || 1 // página actual
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        
+                        return {
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: 'Buscar producto...',
+                templateResult: formatUser, // Formato de los resultados
+            });
+        })
+
+            function formatUser(user) {
+            if (user.loading) {
+                return user.text;
+            }
+
+            var $container = $(
+                "<div class='select2-result-user clearfix'>" +
+                    "<div class='select2-result-user__meta'>" +
+                        "<div class='select2-result-user__title'></div>" +
+                    "</div>" +
+                "</div>"
+            );
+
+            $container.find(".select2-result-user__title").text(user.text);
+            return $container;
+        }
+    </script>
+}

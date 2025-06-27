@@ -13,5 +13,7 @@ public partial class Flflujo
 
     public bool? Activo { get; set; }
 
+    public int? SeeMaquina { get; set; }
+
     public virtual ICollection<FlflujoDet> FlflujoDets { get; set; } = new List<FlflujoDet>();
 }

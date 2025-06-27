@@ -77,6 +77,23 @@ namespace GestionSolicitud.Controllers
 
             return View(solicitudVm);
         }
+        
+        // GET: Flsolicitudes/Create
+        public IActionResult CrearDetalle(int idSolicitud)
+        {
+            var areas = _context.Flareas.ToList();
+            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+            var estados = _context.Flstatuses.ToList();
+            var maquinas = _context.Flmaquinas.ToList();
+
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+            solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+
+            return View(solicitudVm);
+        }
 
 
         [HttpPost]
@@ -229,6 +246,43 @@ namespace GestionSolicitud.Controllers
                 id,solicitud.IdStatus); //Ejecuta el sp de spAutorizacion
 
             return Json(new { success = true, message = "Solicitud: "+id+" autorizada correctamente." });
+        }
+
+        [HttpGet("busquedaItem")]
+        public IActionResult busquedaItem(string term, int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Simula una búsqueda en base de datos
+                var usuarios = _context.Flusuarios
+                    .Where(u => string.IsNullOrEmpty(term) ||
+                               u.Nombre.Contains(term))
+                    .Select(u => new {
+                        id = u.IdUsuario,
+                        text = u.Nombre
+                    })
+                    .ToList();
+
+                var totalCount = _context.Flusuarios
+                    .Count(u => string.IsNullOrEmpty(term) ||
+                               u.Nombre.Contains(term));
+
+                // Formato esperado por Select2
+                var result = new
+                {
+                    results = usuarios,
+                    pagination = new
+                    {
+                        more = (page * pageSize) < totalCount
+                    }
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }
