@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using GestionSolicitud.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace GestionSolicitud.ViewModels
@@ -21,31 +22,45 @@ namespace GestionSolicitud.ViewModels
         [Required(ErrorMessage = "El área es obligatoria")]
         public int? IdArea { get; set; }
 
-        [Display(Name = "Estado")]
-        [Required(ErrorMessage = "El estado es obligatorio")]
-        public string? IdStatus { get; set; }
-
-        [Display(Name = "Número Documento ERP")]
-        [Required(ErrorMessage = "El número de documento ERP es obligatorio")]
-        [StringLength(50, MinimumLength = 1, ErrorMessage = "El número de documento ERP debe tener entre 1 y 50 caracteres")]
-        public string? DocNumErp { get; set; }
 
         [Display(Name = "Comentarios")]
         public string? Comentarios { get; set; }
 
-        [Display(Name = "Cancelada")]
-        public bool? Cancelada { get; set; }
-
-        [Display(Name = "Reenviada")]
-        public bool? Reenviada { get; set; }
-
+        [Display(Name = "Detalle")]
+        [Required(ErrorMessage = "Ingrese al menos un detalle")]
+        public List<DetalleSolicitudLinea> detalle { get; set; }
+       
         // SelectLists
         public SelectList? Areas { get; set; }
         public SelectList? Solicitantes { get; set; }
-        public SelectList? TiposSolicitud { get; set; }
+        public List<TipoSolicitudViewModel>? TiposSolicitud { get; set; }
         public SelectList? Estados { get; set; }
         public SelectList? Maquinas { get; set; }
 
       
+    }
+
+    public class TipoSolicitudViewModel
+    {
+        public TipoSolicitudViewModel(){}
+        public TipoSolicitudViewModel(FltipoSolicitud solicitud,bool maquina){
+            id = solicitud.IdTipoSolicitud;
+            nombre = solicitud.NombreTipoSolicitud;
+
+           mostrarMaquina = maquina;
+        }
+        public int id {  get; set; }
+        public string nombre { get; set; }
+        public bool mostrarMaquina {  get; set; }
+    }
+
+    public class DetalleSolicitudLinea
+    {
+        public int id { get; set; }
+        public int idProducto { get; set; }
+        public int cantidad { get; set; }
+        public int idMaquina { get; set; }
+        public string? nombreProducto { get; set; }
+        public int? maximoCantidad { get; set; }
     }
 }

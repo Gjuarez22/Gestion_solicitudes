@@ -4,15 +4,22 @@
     <h2>Nueva Solicitud</h2>
     <hr />
 
-    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+    <form asp-action="Create" method="post" class="needs-validation" id="form" novalidate>
         <input type="hidden" asp-for="IdSolicitud" />
-
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar solicitud
+            </button>
+        </div>
         <div class="row g-3">
             <!-- Tipo Solicitud -->
             <div class="col-md-6">
                 <label asp-for="IdTipoSolicitud" class="form-label">Tipo de Solicitud</label>
-                <select asp-for="IdTipoSolicitud" class="form-select" asp-items="Model.TiposSolicitud">
+                <select asp-for="IdTipoSolicitud" class="form-select" id="IdTipoSolicitud">
                     <option value="">-- Seleccionar --</option>
+                    @foreach(var tipoSolicitud in Model.TiposSolicitud){
+                        <option value="@tipoSolicitud.id" data-mostrarMaquina="@tipoSolicitud.mostrarMaquina">@tipoSolicitud.nombre</option>
+                    }
                 </select>
                 <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
             </div>
@@ -26,22 +33,6 @@
                 <span asp-validation-for="IdArea" class="text-danger"></span>
             </div>
 
-            <!-- Status -->
-            <div class="col-md-6">
-                <label asp-for="IdStatus" class="form-label">Estado</label>
-                <select asp-for="IdStatus" class="form-select" asp-items="Model.Estados">
-                    <option value="">-- Seleccionar --</option>
-                </select>
-                <span asp-validation-for="IdStatus" class="text-danger"></span>
-            </div>
-
-            <!-- DocNumERP -->
-            <div class="col-md-6">
-                <label asp-for="DocNumErp" class="form-label">Número Documento ERP</label>
-                <input asp-for="DocNumErp" class="form-control" />
-                <span asp-validation-for="DocNumErp" class="text-danger"></span>
-            </div>
-
             <!-- Comentarios -->
             <div class="col-12">
                 <label asp-for="Comentarios" class="form-label">Comentarios</label>
@@ -49,16 +40,55 @@
                 <span asp-validation-for="Comentarios" class="text-danger"></span>
             </div>
         </div>
+        <hr>
+        <!-- Detalle de la solicitud -->
+        <h3>Detalle de la solicitud </h3>
+        <div class="row g-3 align-items-end">
+            <!-- Tipo Solicitud -->
+            <div class="col-6">
+                <label class="form-label">Código de producto</label>
+                <select class="form-select " id="productoSelect" ></select>
+                <span id="val-producto" class="text-danger hide">Seleccione el producto.</span>
+            </div>
 
-        <!-- Botones -->
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar
-            </button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
+            <div class="col-6">
+                <label class="form-label">Cantidad</label>
+                <input type="text" name="" id="" class="form-control">
+                <span id="val-cantidad" class="text-danger hide"></span>
+            </div>
+            
+           <div class="col-md-12 hide" id="contenedorMaquina">
+                <label class="form-label">Maquinas</label>
+                <select id="idMaquina" class="form-select" asp-items="Model.Maquinas">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span id="val-maquina" class="text-danger hide">Seleccione una maquina</span>
+            </div>
+            
+            <!-- Status -->
+          <div>
+            <div class="d-flex justify-content-end">
+                <label class="btn btn-success"><i class="fa-solid fa-plus"></i> Agregar detalle</label>
+            </div>
+            <br>
+            
+            <span id="val-detalle" class="text-danger hide">Ingrese al menos una detalle. </span>
+            <table class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpo">
+
+                </tbody>
+            </table>
+          </div>
         </div>
+       
     </form>
 </div>
 
@@ -66,7 +96,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    
+    <script src="~/js/CrearSolicitud.js"></script>
     <script>
         // Validación del lado del cliente
         (() => {

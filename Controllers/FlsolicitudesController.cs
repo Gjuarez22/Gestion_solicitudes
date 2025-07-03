@@ -67,13 +67,27 @@ namespace GestionSolicitud.Controllers
         public IActionResult Create()
         {
             var areas = _context.Flareas.ToList();
-            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+            var tipoSolicitud = _context.FltipoSolicituds
+                .ToList();
+
             var estados = _context.Flstatuses.ToList();
+            var maquinas = _context.Flmaquinas.ToList();
+
+
+            var tipoSolicitudes = new List<TipoSolicitudViewModel>();
+            foreach (var solicitud in tipoSolicitud)
+            {
+                var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
+                var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
+
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud, mostrarMaquina));
+            }
 
             var solicitudVm = new SolicitudViewModel();
             solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
             solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
-            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+            solicitudVm.TiposSolicitud = tipoSolicitudes;
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
 
             return View(solicitudVm);
         }
@@ -82,14 +96,24 @@ namespace GestionSolicitud.Controllers
         public IActionResult CrearDetalle(int idSolicitud)
         {
             var areas = _context.Flareas.ToList();
-            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+            var tipoSolicitud = _context.FltipoSolicituds
+                .ToList();
             var estados = _context.Flstatuses.ToList();
             var maquinas = _context.Flmaquinas.ToList();
+
+            var tipoSolicitudes = new List<TipoSolicitudViewModel>();
+            foreach (var solicitud in tipoSolicitud)
+            {
+                var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
+                var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
+
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud,mostrarMaquina));
+            }
 
             var solicitudVm = new SolicitudViewModel();
             solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
             solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
-            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+            solicitudVm.TiposSolicitud = tipoSolicitudes;
             solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
 
             return View(solicitudVm);
@@ -108,8 +132,8 @@ namespace GestionSolicitud.Controllers
                 solicitud.Fecha =  DateTime.Now;
                 solicitud.IdSolicitante = userId;
                 solicitud.IdTipoSolicitud = flsolicitud.IdTipoSolicitud;
-                solicitud.IdStatus = flsolicitud.IdStatus;
-                solicitud.DocNumErp = flsolicitud.DocNumErp;
+               // solicitud.IdStatus = flsolicitud.IdStatus;
+                //solicitud.DocNumErp = flsolicitud.DocNumErp;
                 solicitud.Comentarios = flsolicitud.Comentarios;
                 solicitud.IdArea = flsolicitud.IdArea;
                 solicitud.Cancelada = false;
