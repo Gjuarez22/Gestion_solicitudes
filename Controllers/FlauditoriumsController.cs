@@ -36,6 +36,7 @@ namespace GestionSolicitud.Controllers
 
             var flauditorium = await _context.Flauditoria
                 .FirstOrDefaultAsync(m => m.IdAuditoria == id);
+
             if (flauditorium == null)
             {
                 return NotFound();
@@ -155,7 +156,7 @@ namespace GestionSolicitud.Controllers
             return _context.Flauditoria.Any(e => e.IdAuditoria == id);
         }
 
-        [Authorize(Roles = "Administrador")]
+       // [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DetallesPorSolicitud(int? id)
         {
             //Id debe de ser rl id de la solicitud
@@ -164,21 +165,50 @@ namespace GestionSolicitud.Controllers
                 return NotFound();
             }
 
-            var flauditorium = await _context.Flauditoria
+            /*var flauditorium = await _context.Flauditoria
                 .Where(x=>x.IdSolicitud == id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();*/
 
+             var flauditorium = await _context.Flauditoria
+                 .Where(x => x.IdSolicitud == id)
+                 .ToListAsync();   
             
-            if (flauditorium == null)
+
+            foreach (var item in flauditorium)
+            {
+                item.Estatus = _context.Flstatuses
+                    .Where(s => s.IdStatus == item.IdStatus)
+                    .Select(s => s.NombreStatus)
+                    .FirstOrDefault();
+
+                item.Ususario_ = _context.Flusuarios
+                    .Where(s => s.IdUsuario == item.IdUsuario)
+                    .Select(s => s.Nombre)
+                    .FirstOrDefault();
+            }
+
+            /*foreach (var item in flauditorium)
+            {
+                item.Ususario_ = _context.Flusuarios
+                    .Where(s => s.IdUsuario == item.IdUsuario)
+                    .Select(s => s.Nombre)
+                    .FirstOrDefault();
+            }*/
+
+
+            if (flauditorium == null || !flauditorium.Any())
             {
                 return NotFound();
             }
-            else
+            /*else
             {
                 ViewBag.usuario = _context.Flusuarios.Find(flauditorium.IdUsuario);
                 ViewBag.solicitud  = _context.Flsolicituds.Find(flauditorium.IdSolicitud);
                 ViewBag.estado = _context.Flstatuses.Find(flauditorium.IdStatus);
-            }
+                   
+            }*/
+
+         
 
             return PartialView(flauditorium);
         }

@@ -21,13 +21,13 @@ namespace GestionSolicitud.ViewModels
         [Required(ErrorMessage = "El área es obligatoria")]
         public int? IdArea { get; set; }
 
-        [Display(Name = "Estado")]
-        [Required(ErrorMessage = "El estado es obligatorio")]
+        //[Display(Name = "Estado")]
+       // [Required(ErrorMessage = "El estado es obligatorio")]
         public string? IdStatus { get; set; }
 
-        [Display(Name = "Número Documento ERP")]
-        [Required(ErrorMessage = "El número de documento ERP es obligatorio")]
-        [StringLength(50, MinimumLength = 1, ErrorMessage = "El número de documento ERP debe tener entre 1 y 50 caracteres")]
+       // [Display(Name = "Número Documento ERP")]
+       // [Required(ErrorMessage = "El número de documento ERP es obligatorio")]
+       // [StringLength(50, MinimumLength = 1, ErrorMessage = "El número de documento ERP debe tener entre 1 y 50 caracteres")]
         public string? DocNumErp { get; set; }
 
         [Display(Name = "Comentarios")]
@@ -46,6 +46,11 @@ namespace GestionSolicitud.ViewModels
         public SelectList? Estados { get; set; }
         public SelectList? Maquinas { get; set; }
 
-      
+        
+        //public SelectList?Productos { get; set; }
+
+        //[Display(Name = "Productos")]
+        //public string? Codigo { get; set; }
+        
     }
 }

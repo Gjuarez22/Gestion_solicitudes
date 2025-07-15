@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "Resultado de Autorización";
+}
+
+
+<h1>Respuesta por a la accion de correo... </h1>
+
+    <div id="responseModal" class="modal">
+        <div class="modal-content">
+            <h2>Respuesta del Servidor</h2>
+            <p id="modalMessage"></p>
+            <button onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+
+<script>
+        // Datos de la respuesta JSON
+         const response = {
+        success: @ViewBag.Success.ToString().ToLower(),
+        message: "@ViewBag.Message",
+        codigoResultado: @ViewBag.CodigoResultado
+    };
+
+        // Función para mostrar el modal
+        function showModal() {
+            const modal = document.getElementById('responseModal');
+            const modalMessage = document.getElementById('modalMessage');
+            
+            // Insertar el mensaje del JSON en el modal
+            modalMessage.textContent = response.message;
+            
+            // Mostrar el modal
+            modal.style.display = 'flex';
+
+            // Cerrar el modal automáticamente después de 15 segundos
+            setTimeout(closeModal, 15000);
+        
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            const modal = document.getElementById('responseModal');
+            modal.style.display = 'none';
+        }
+
+        // Mostrar el modal al cargar la página
+        window.onload = function() {
+            showModal();
+        };
+
+        // Cerrar el modal al hacer clic fuera del contenido
+        window.onclick = function(event) {
+            const modal = document.getElementById('responseModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>

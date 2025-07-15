@@ -6,20 +6,25 @@
     <div class="nav-section">
         <a class="nav-item-sibebar " asp-controller="Flsolicitudes" asp-action="Index">
             <i class="fas fa-list"></i>
+            <span>Solicitudes</span>
+        </a>
+        
+        <a class="nav-item-sibebar" asp-controller="Flsolicitudes" asp-action="IndexAll">
+            <i class="fas fa-tachometer-alt"></i>
             <span>Consulta</span>
         </a>
         
-        <a href="#" class="nav-item-sibebar">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Resumen</span>
-        </a>
-        
-        <div class="nav-separator"></div>
-        
-        <a class="nav-item-sibebar" asp-controller="Flsolicitudes" asp-action="Create">
-            <i class="fas fa-file-alt"></i>
-            <span>Nueva Solicitud</span>
-        </a>
+
+        @if (User.IsInRole("Solicitante") || User.IsInRole("Administrador") )
+        {
+            <div class="nav-separator"></div>
+            
+            <a class="nav-item-sibebar" asp-controller="Flsolicitudes" asp-action="Create">
+                <i class="fas fa-file-alt"></i>
+                <span>Nueva Solicitud</span>
+            </a>
+        }                             
+
          @*
         <a href="#" class="nav-item-sibebar">
             <i class="icon-file"></i>

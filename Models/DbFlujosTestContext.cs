@@ -63,7 +63,8 @@ public partial class DbFlujosTestContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost;Database=DbFlujosTest;Integrated Security=True;TrustServerCertificate=True");
+       // => optionsBuilder.UseSqlServer("Server=localhost;Database=DbFlujosTest;Integrated Security=True;TrustServerCertificate=True");
+       => optionsBuilder.UseSqlServer("Server=10.10.0.4; Database=DbFlujosTest1; User Id=integrasap; Password=indufoam01$;TrustServerCertificate=true; Trusted_Connection=False; MultipleActiveResultSets=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -226,6 +227,8 @@ public partial class DbFlujosTestContext : DbContext
                         .HasConstraintName("FK_FLRolUsuario_FLUsuarios"),
                     l => l.HasOne<Flrol>().WithMany()
                         .HasForeignKey("IdRol")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_FLRolUsuario_FLRol"),
                     j =>

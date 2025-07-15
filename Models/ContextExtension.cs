@@ -8,6 +8,7 @@ namespace GestionSolicitud.Models
     public partial class DbFlujosTestContext
     {
         public virtual DbSet<SpListadoSoliciturdes> ListadoSoliciturdesSp { get; set; }
+        public virtual DbSet<SpListadoSoliciturdesAll> ListadoSoliciturdesAllSp { get; set; }
         public virtual DbSet<SpBuscarAutocompletado> BuscarAutocompletadoSp { get; set; }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
@@ -29,6 +30,16 @@ namespace GestionSolicitud.Models
         {
             return ListadoSoliciturdesSp
                 .FromSqlRaw("EXEC sp_ListadoSoliciturdes @idUsuario, @Rol",
+                    new SqlParameter("@idUsuario", idUsuario),
+                    new SqlParameter("@Rol", idRol))
+                .AsNoTracking()
+                .ToList();
+        }
+
+        public List<SpListadoSoliciturdesAll> spListadoSoliciturdesAll(int idUsuario, int idRol)
+        {
+            return ListadoSoliciturdesAllSp
+                .FromSqlRaw("EXEC sp_ListadoSoliciturdesAll @idUsuario, @Rol",
                     new SqlParameter("@idUsuario", idUsuario),
                     new SqlParameter("@Rol", idRol))
                 .AsNoTracking()

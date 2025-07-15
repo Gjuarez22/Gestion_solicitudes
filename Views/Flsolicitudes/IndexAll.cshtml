@@ -1,18 +1,11 @@
-﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
-@using System.Security.Claims
+﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdesAll>
+
 @{
     ViewData["Title"] = "Solicitudes";
 }
 
-@{
-    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    
-}
-
 <div class="table-responsive">
-
 <table class="table table-bordered table-hover" id ="tabla-solicitudes">
-   
     <thead>
         <tr>
             <th>
@@ -27,7 +20,7 @@
             <th>
                 DocNump
             </th>
-         
+        
             <th>
                 Comentarios
             </th>
@@ -40,7 +33,7 @@
             <th>
                 Estado
             </th>
-            <th>
+           <th>
                 Acciones
             </th>
         </tr>
@@ -60,7 +53,7 @@
             <td>
                 @item.DocNum
             </td>
-      
+          
             <td>
                 @item.Comentarios
             </td>
@@ -73,6 +66,7 @@
             <td>
                 @item.Estado
             </td>
+            
             <td>
                 <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     Acciones
@@ -81,37 +75,12 @@
                     @*TODOS TIENEN ACCESO A ESTOS BOTONES*@
                     <li><a class="dropdown-item verDetalle" data-id="@item.Id" >Ver Detalle</a></li>
                     <li><a class="dropdown-item verAuditoria" data-id="@item.Id" >Ver auditoria</a></li>
-                    <li><a class="dropdown-item verSAP" data-id="@item.Id" >Ver DocSAP</a></li>
-                    
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
-                        <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
-                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
-                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
-                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
-                        
-                    
-                    }else if(User.IsInRole("Solicitante")){
-                     
-                        <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
-                        <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
-                        
-                    
-                    }else if(User.IsInRole("Autorizador")){
-                    
-                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
-                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
-                       
-                    }else if(User.IsInRole("EncargadoBodega")){
 
-                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
-                    }
-                    
                 </ul>
             </td>
+            
         </tr>
-}
+    }
     </tbody>
 </table>
 </div>

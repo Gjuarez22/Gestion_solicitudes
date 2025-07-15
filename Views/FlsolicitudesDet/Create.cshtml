@@ -1,0 +1,63 @@
+﻿@model GestionSolicitud.ViewModels.SolicitudDetalleViewModel
+
+<div class="container mt-4">
+    <h2>Detalle de la Nueva Solicitud</h2>
+    <hr />
+
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        <input type="hidden" asp-for="IdSolicitud" />
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label asp-for="IdSolicitud" class="control-label">Número de Solicitud (ID) </label>
+                <input asp-for="IdSolicitud" class="form-control" />
+                <span asp-validation-for="IdSolicitud" class="text-danger"></span>
+            </div>
+ @*           
+            <!-- Tipo Solicitud -->
+            <div class="col-md-6">
+                <label asp-for="IdMaquina" class="form-label">Seleccionar la Maquina</label>
+                <select asp-for="IdMaquina" class="form-select" asp-items="Model.Maquina">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="IdMaquina" class="text-danger"></span>
+            </div>
+*@
+
+        <!-- Botones -->
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Siguiente
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        // Validación del lado del cliente
+        (() => {
+            'use strict'
+
+            const forms = document.querySelectorAll('.needs-validation')
+
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}
