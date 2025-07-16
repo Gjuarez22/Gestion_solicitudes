@@ -283,7 +283,8 @@ namespace GestionSolicitud.Controllers
                                u.Nombre.Contains(term))
                     .Select(u => new {
                         id = u.IdUsuario,
-                        text = u.Nombre
+                        text = u.Nombre,
+                        cantidad = 2
                     })
                     .ToList();
 

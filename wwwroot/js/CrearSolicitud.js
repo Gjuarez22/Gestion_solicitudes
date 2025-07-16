@@ -13,7 +13,7 @@
             },
             processResults: function (data, params) {
                 params.page = params.page || 1;
-                
+                data.res
                 return {
                     results: data.results,
                     pagination: {
@@ -47,6 +47,10 @@
             e.preventDefault();
         }
     });
+
+    $("#agregarDetalle").on("click",function(){
+        console.log("agrego");
+    })
 });
 
 function formatUser(user) {
