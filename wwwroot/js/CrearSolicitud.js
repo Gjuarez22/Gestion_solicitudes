@@ -1,5 +1,4 @@
   $(document).ready(function(){
-    console.log("luisto");
     $('#productoSelect').select2({
         ajax: {
             url: '/busquedaItem', // URL del controlador
@@ -13,9 +12,14 @@
             },
             processResults: function (data, params) {
                 params.page = params.page || 1;
-                data.res
+                // Agregar data-cantidad a cada resultado
+                var results = data.results.map(function(item) {
+                    // Asume que cada item tiene una propiedad cantidad
+                    item.cantidad = item.cantidad || data.cantidad;
+                    return item;
+                });
                 return {
-                    results: data.results,
+                    results: results,
                     pagination: {
                         more: data.pagination.more
                     }
@@ -25,6 +29,14 @@
         },
         placeholder: 'Buscar producto...',
         templateResult: formatUser, // Formato de los resultados
+        templateSelection: function (user) {
+            // Cuando se selecciona, agrega el atributo data-cantidad al option
+            var option = $('#productoSelect').find('option[value="' + user.id + '"]');
+            if (option.length && user.cantidad !== undefined) {
+                option.attr('data-cantidad', user.cantidad);
+            }
+            return user.text || user.id;
+        }
     });
 
     $("#IdTipoSolicitud").on('change',function(){
@@ -49,8 +61,101 @@
     });
 
     $("#agregarDetalle").on("click",function(){
-        console.log("agrego");
+        // Validar producto
+        let tipoSolicitudValue = $("#IdTipoSolicitud option:selected").val();
+        console.log("ss",tipoSolicitudValue);
+
+        if(tipoSolicitudValue == "0"){
+            $("#val-tipo-solicitud").text("Selecione un tipo de solicitud.");
+            $("#val-tipo-solicitud").show();
+            return;
+        }
+        
+        var productoId = $("#productoSelect").val();
+        var productoText = $("#productoSelect option:selected").text();
+        var productoCantidad = $("#productoSelect option:selected").attr("data-cantidad") || "-";
+        if (!productoId) {
+            $("#val-producto").show();
+            return;
+        } else {
+            $("#val-producto").hide();
+        }
+
+        
+        
+        // Validar cantidad
+        var cantidad = $("#cantidad").val();
+        if (!cantidad || isNaN(cantidad) || parseFloat(cantidad) <= 0) {
+            $("#val-cantidad").text("Ingrese una cantidad válida.").show();
+            return;
+        } else {
+            $("#val-cantidad").hide();
+        }
+
+        // Validar máquina si está visible
+        var maquinaVisible = $("#contenedorMaquina").is(":visible");
+        var maquinaId = $("#idMaquina").val();
+        var maquinaText = $("#idMaquina option:selected").text();
+        if (maquinaVisible && !maquinaId) {
+            $("#val-maquina").show();
+            return;
+        } else {
+            $("#val-maquina").hide();
+        }
+        var cantidadFilas = $("#cuerpo tr").length;
+        var i = cantidadFilas; 
+        // Agregar fila al cuerpo de la tabla
+        var fila = `
+        <tr> 
+            <td>
+              <input type ="hidden" name="detalle[${i}].idProducto" value="${productoId}">
+              <input type ="hidden" name="detalle[${i}].cantidad" value="${cantidad}">
+              <input type ="hidden" name="detalle[${i}].idMaquina" value="${maquinaId}">
+                ${productoId} </td> 
+            <td>  ${productoText}  </td> 
+            <td>  ${cantidad}  </td> 
+            <td>  ${(maquinaVisible ? maquinaText : "-")}  </td> 
+            <td><button type='button' class='btn btn-danger btn-sm eliminar-detalle'>Eliminar</button></td> 
+        </tr>`;
+        $("#cuerpo").append(fila);
+        $("#productoSelect").val("0");
+        $("#idMaquina").val("0");
+        $("#cantidad").val("");
     })
+
+    $("#productoSelect").on('change', function() {
+        $("#cantidad").attr("disabled", false);
+        var selectedOption = $(this).find('option:selected');
+        var cantidad = selectedOption.data('cantidad');
+        console.log("Cantidad seleccionada: " + cantidad);   
+        if (cantidad !== undefined) {
+            $("#cantidadMaxima").text(cantidad);
+        } else {
+            $("#cantidadMaxima").text('-');
+        }
+    });
+
+    $("#cantidad").on('input', function() {
+        var cantidadMaxima = parseInt($("#cantidadMaxima").text());
+        var cantidadIngresada = parseInt($(this).val());
+        
+        console.log(cantidadMaxima,cantidadIngresada);
+
+        if (isNaN(cantidadIngresada) || cantidadIngresada < 0) {
+            $("#val-cantidad").text("Cantidad inválida").show();
+        } else if (cantidadIngresada > cantidadMaxima) {
+            $("#val-cantidad").text("Cantidad excede el máximo permitido").show();
+            $(this).val(cantidadMaxima);
+
+        } else {
+            $("#val-cantidad").hide();
+        }
+    });
+
+    $(document).on("click",".eliminar-detalle", function() {
+        $(this).closest("tr").remove();
+    });
+
 });
 
 function formatUser(user) {

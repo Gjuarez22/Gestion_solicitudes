@@ -16,12 +16,12 @@
             <div class="col-md-6">
                 <label asp-for="IdTipoSolicitud" class="form-label">Tipo de Solicitud</label>
                 <select asp-for="IdTipoSolicitud" class="form-select" id="IdTipoSolicitud">
-                    <option value="">-- Seleccionar --</option>
+                    <option value="0">-- Seleccionar --</option>
                     @foreach(var tipoSolicitud in Model.TiposSolicitud){
                         <option value="@tipoSolicitud.id" data-mostrarMaquina="@tipoSolicitud.mostrarMaquina">@tipoSolicitud.nombre</option>
                     }
                 </select>
-                <span asp-validation-for="IdTipoSolicitud" class="text-danger"></span>
+                <span asp-validation-for="IdTipoSolicitud" id="val-tipo-solicitud" class="text-danger"></span>
             </div>
 
             <!-- Área -->
@@ -53,7 +53,8 @@
 
             <div class="col-6">
                 <label class="form-label">Cantidad</label>
-                <input type="text" name="" id="" class="form-control">
+                <label class="form-label">Cantidad maxima: <label id="cantidadMaxima">-</label></label>
+                <input type="text" name="" id="cantidad" disabled class="form-control">
                 <span id="val-cantidad" class="text-danger hide"></span>
             </div>
             
@@ -79,6 +80,7 @@
                         <th>Codigo</th>
                         <th>Descripción</th>
                         <th>Cantidad</th>
+                        <th>Maquina</th>
                         <th>Acción</th>
                     </tr>
                 </thead>

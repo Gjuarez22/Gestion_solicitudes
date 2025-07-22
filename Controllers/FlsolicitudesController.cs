@@ -10,6 +10,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using GestionSolicitud.ViewModels;
 using System.Linq.Expressions;
+using Microsoft.Data.SqlClient;
+using System.Net.NetworkInformation;
 
 namespace GestionSolicitud.Controllers
 {
@@ -127,6 +129,7 @@ namespace GestionSolicitud.Controllers
             if (ModelState.IsValid)
             {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); //Obtener el id de la sesión actual
+                /*
                 
                 var solicitud = new Flsolicitud();
                 solicitud.Fecha =  DateTime.Now;
@@ -139,10 +142,68 @@ namespace GestionSolicitud.Controllers
                 solicitud.Cancelada = false;
                 
                 _context.Add(solicitud);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();*/
+                // Parámetro de salida
+                var nuevoIdParam = new SqlParameter
+                {
+                    ParameterName = "@NuevoID",
+                    SqlDbType = System.Data.SqlDbType.Int,
+                    Direction = System.Data.ParameterDirection.Output
+                };
+
+                // Ejecutar el SP
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC [dbo].[spAgregarSolicitudEnc] @IdSolicitante, @IdTipoSolicitud, @IdArea, @IdStatus, @Comentarios, @NuevoID OUTPUT",
+                    new SqlParameter("@IdSolicitante", userId),
+                    new SqlParameter("@IdTipoSolicitud", flsolicitud.IdTipoSolicitud),
+                    new SqlParameter("@IdArea", flsolicitud.IdArea),
+                    new SqlParameter("@IdStatus","PRE"),
+                    new SqlParameter("@Comentarios", flsolicitud.Comentarios),
+                    nuevoIdParam
+                );
+                int nuevoId = (int)nuevoIdParam.Value;
+
+                foreach (var item in flsolicitud.detalle)
+                {
+                    var idSolicitud = nuevoId;
+                    var idProducto = item.idProducto;
+                    var cantidad = item.cantidad;
+                    var idMaquina = item.idMaquina;
+
+                    var filasAfectadas = await _context.Database.ExecuteSqlRawAsync(
+                        "EXEC [dbo].[spAgregarSolicitudDet] @IdSolicitud, @IdProducto, @cantidad, @IdMaquina",
+                        new SqlParameter("@IdSolicitud", idSolicitud),
+                        new SqlParameter("@IdProducto", idProducto),
+                        new SqlParameter("@cantidad", cantidad),
+                        new SqlParameter("@IdMaquina", idMaquina)
+                    );
+                }
+
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(flsolicitud);
+
+            var areas = _context.Flareas.ToList();
+            var tipoSolicitud = _context.FltipoSolicituds
+                .ToList();
+            var estados = _context.Flstatuses.ToList();
+            var maquinas = _context.Flmaquinas.ToList();
+
+            var tipoSolicitudes = new List<TipoSolicitudViewModel>();
+            foreach (var solicitud in tipoSolicitud)
+            {
+                var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
+                var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
+
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud, mostrarMaquina));
+            }
+
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+            solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = tipoSolicitudes;
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+            return View(solicitudVm);
         }
 
         // GET: Flsolicitudes/Edit/5
@@ -278,24 +339,26 @@ namespace GestionSolicitud.Controllers
             try
             {
                 // Simula una búsqueda en base de datos
-                var usuarios = _context.Flusuarios
+                var productos = _context.VwProductos2s
                     .Where(u => string.IsNullOrEmpty(term) ||
-                               u.Nombre.Contains(term))
+                               u.Codigo.Contains(term) ||
+                               u.ItemName.Contains(term))
                     .Select(u => new {
-                        id = u.IdUsuario,
-                        text = u.Nombre,
-                        cantidad = 2
+                        id = u.Id,
+                        text = u.ItemName,
+                        cantidad = u.Existencia
                     })
                     .ToList();
 
-                var totalCount = _context.Flusuarios
+                var totalCount = _context.VwProductos2s
                     .Count(u => string.IsNullOrEmpty(term) ||
-                               u.Nombre.Contains(term));
+                               u.Codigo.Contains(term) ||
+                               u.ItemName.Contains(term));
 
                 // Formato esperado por Select2
                 var result = new
                 {
-                    results = usuarios,
+                    results = productos,
                     pagination = new
                     {
                         more = (page * pageSize) < totalCount

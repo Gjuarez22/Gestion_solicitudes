@@ -53,6 +53,8 @@ public partial class DbFlujosTestContext : DbContext
 
     public virtual DbSet<VwProducto> VwProductos { get; set; }
 
+    public virtual DbSet<VwProductos2> VwProductos2s { get; set; }
+
     public virtual DbSet<VwRolUsuario> VwRolUsuarios { get; set; }
 
     public virtual DbSet<VwSolicitudDetalle> VwSolicitudDetalles { get; set; }
@@ -541,6 +543,31 @@ public partial class DbFlujosTestContext : DbContext
             entity.Property(e => e.WhsCode)
                 .HasMaxLength(8)
                 .UseCollation("SQL_Latin1_General_CP850_CI_AS");
+        });
+
+        modelBuilder.Entity<VwProductos2>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__vwProduc__3213E83F0A4B8786");
+
+            entity.ToTable("vwProductos2");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AcctCode)
+                .HasMaxLength(1)
+                .IsUnicode(false);
+            entity.Property(e => e.AreaRepuesto).HasMaxLength(100);
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(50)
+                .HasColumnName("codigo");
+            entity.Property(e => e.Existencia)
+                .HasColumnType("numeric(38, 4)")
+                .HasColumnName("existencia");
+            entity.Property(e => e.ItemName).HasMaxLength(100);
+            entity.Property(e => e.ItmsGrpNam).HasMaxLength(20);
+            entity.Property(e => e.UniMed)
+                .HasMaxLength(100)
+                .HasColumnName("uni_med");
+            entity.Property(e => e.WhsCode).HasMaxLength(8);
         });
 
         modelBuilder.Entity<VwRolUsuario>(entity =>
