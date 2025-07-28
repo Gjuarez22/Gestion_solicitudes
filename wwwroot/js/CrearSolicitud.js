@@ -1,4 +1,10 @@
   $(document).ready(function(){
+    const edicion = document.getElementById("editar");
+    console.log(edicion);
+    if(edicion){
+        evaluarMaquina($("#IdTipoSolicitud option:selected"));
+    }
+
     $('#productoSelect').select2({
         ajax: {
             url: '/busquedaItem', // URL del controlador
@@ -40,14 +46,8 @@
     });
 
     $("#IdTipoSolicitud").on('change',function(){
-        let opcion = $(this).find("option:selected");
-       let mostraMaquina = opcion.data("mostrarmaquina");
-        if(mostraMaquina == "True"){
-            $("#contenedorMaquina").show();
-        }else{
-            $("#contenedorMaquina").hide();
-        }
-    })
+        evaluarMaquina($(this));
+    });
 
     $("#idMaquina").select2();
 
@@ -102,6 +102,10 @@
         } else {
             $("#val-maquina").hide();
         }
+        const editar = document.getElementById("editar");
+        
+        $("#na").remove();
+
         var cantidadFilas = $("#cuerpo tr").length;
         var i = cantidadFilas; 
         // Agregar fila al cuerpo de la tabla
@@ -173,4 +177,14 @@ function formatUser(user) {
 
     $container.find(".select2-result-user__title").text(user.text);
     return $container;
+}
+
+function evaluarMaquina(opcion){
+console.log("si");
+       let mostraMaquina = opcion.data("mostrarmaquina");
+        if(mostraMaquina == "True"){
+            $("#contenedorMaquina").show();
+        }else{
+            $("#contenedorMaquina").hide();
+        }
 }

@@ -3,6 +3,12 @@
 @{
     ViewData["Title"] = "Solicitudes";
 }
+<br />
+@if(ViewBag.guardado != null){
+    <div class="row">
+        <div class="badge-success">@ViewBag.guardado</div>
+    </div>
+}
 
 <div class="table-responsive">
 <table class="table table-bordered table-hover" id ="tabla-solicitudes">
@@ -98,6 +104,9 @@
 
                         <li><a class="dropdown-item" href="#">Entregar</a></li>
                     }
+                    @if(item.Estado == "PRE" || item.Estado =="INI"){  
+                        <a class="dropdown-item" href="@Url.Action("Editar", "Flsolicitudes", new { id = item.Id })">Editar</a>
+                    }
                 </ul>
             </td>
         </tr>
@@ -131,5 +140,4 @@
 @**************************************************FIN MODAL****************************************@
 
 
-//TODO : Continuar con la funcionalidad de los botones
 <script src="~/js/FlSolicitudes.js"></script>

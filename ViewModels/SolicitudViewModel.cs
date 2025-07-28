@@ -27,7 +27,6 @@ namespace GestionSolicitud.ViewModels
         public string? Comentarios { get; set; }
 
         [Display(Name = "Detalle")]
-        [Required(ErrorMessage = "Ingrese al menos un detalle")]
         public List<DetalleSolicitudLinea> detalle { get; set; }
        
         // SelectLists
@@ -62,5 +61,9 @@ namespace GestionSolicitud.ViewModels
         public int idMaquina { get; set; }
         public string? nombreProducto { get; set; }
         public int? maximoCantidad { get; set; }
+        public string? codigo {  get; set; }
+        public string? descripcion { get; set; }
+        public string? maquinaString { get; set; }
+
     }
 }

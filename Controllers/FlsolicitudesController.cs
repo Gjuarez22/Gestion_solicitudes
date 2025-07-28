@@ -28,17 +28,26 @@ namespace GestionSolicitud.Controllers
         // GET: Flsolicitudes
         public async Task<IActionResult> Index()
         {
+
+            if (TempData["guardado"] != null)
+            {
+                ViewBag.guardado = TempData["guardado"];
+                // Opcional: TempData se autodestruye después de leerlo
+                // Si quieres conservarlo para más usos:
+                // TempData.Keep("guardado");
+            }
+
             var claimIdUsuario = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var claimRol = User.FindFirst(ClaimTypes.Role)?.Value;
 
             int.TryParse(claimIdUsuario, out int idUsuario);
             var idRol = _context.Flrols
                 .Where(r => r.NombreRol == claimRol)
-                .Select(r=>r.IdRol)
+                .Select(r => r.IdRol)
                 .FirstOrDefault();
 
-            var spListadoSolicitudes = _context.spListadoSoliciturdes(idUsuario,idRol);
-                
+            var spListadoSolicitudes = _context.spListadoSoliciturdes(idUsuario, idRol);
+
             return View(spListadoSolicitudes);
         }
 
@@ -93,7 +102,7 @@ namespace GestionSolicitud.Controllers
 
             return View(solicitudVm);
         }
-        
+
         // GET: Flsolicitudes/Create
         public IActionResult CrearDetalle(int idSolicitud)
         {
@@ -109,7 +118,7 @@ namespace GestionSolicitud.Controllers
                 var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
                 var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
 
-                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud,mostrarMaquina));
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud, mostrarMaquina));
             }
 
             var solicitudVm = new SolicitudViewModel();
@@ -124,7 +133,7 @@ namespace GestionSolicitud.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( SolicitudViewModel flsolicitud)
+        public async Task<IActionResult> Create(SolicitudViewModel flsolicitud)
         {
             if (ModelState.IsValid)
             {
@@ -157,7 +166,7 @@ namespace GestionSolicitud.Controllers
                     new SqlParameter("@IdSolicitante", userId),
                     new SqlParameter("@IdTipoSolicitud", flsolicitud.IdTipoSolicitud),
                     new SqlParameter("@IdArea", flsolicitud.IdArea),
-                    new SqlParameter("@IdStatus","PRE"),
+                    new SqlParameter("@IdStatus", "PRE"),
                     new SqlParameter("@Comentarios", flsolicitud.Comentarios),
                     nuevoIdParam
                 );
@@ -179,7 +188,8 @@ namespace GestionSolicitud.Controllers
                     );
                 }
 
-
+                // En tu Action origen
+                TempData["guardado"] = "Registro ingresado correctamente";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -207,85 +217,121 @@ namespace GestionSolicitud.Controllers
         }
 
         // GET: Flsolicitudes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Editar(int? id)
         {
-            if (id == null)
+            var solicitudEncontrada = await _context.Flsolicituds.FindAsync(id);
+            var detalle = await _context.FlsolicitudDets.Where(x=>x.IdSolicitud == id).ToListAsync();
+
+            var areas = _context.Flareas.ToList();
+            var tipoSolicitud = _context.FltipoSolicituds
+                .ToList();
+            var estados = _context.Flstatuses.ToList();
+            var maquinas = _context.Flmaquinas.ToList();
+
+            var tipoSolicitudes = new List<TipoSolicitudViewModel>();
+            foreach (var solicitud in tipoSolicitud)
             {
-                return NotFound();
+                var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
+                var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
+
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud, mostrarMaquina));
             }
 
-            var flsolicitud = await _context.Flsolicituds.FindAsync(id);
-            if (flsolicitud == null)
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+            solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = tipoSolicitudes;
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+
+            solicitudVm.IdTipoSolicitud = solicitudEncontrada.IdTipoSolicitud??0;
+            solicitudVm.IdArea = solicitudEncontrada.IdArea??0;
+            solicitudVm.Comentarios = solicitudEncontrada.Comentarios;
+            solicitudVm.detalle = new List<DetalleSolicitudLinea>();
+
+            
+            foreach (var det in detalle)
             {
-                return NotFound();
+                var prod= _context.VwProductos2s.FirstOrDefault(x => x.Id == int.Parse(det.IdProducto));
+
+                if (prod != null)
+                {
+                    solicitudVm.detalle.Add(new DetalleSolicitudLinea()
+                    {
+                        cantidad = (int)det.Cantidad,
+                        maquinaString = det.IdMaquina != null ? maquinas.Where(x => x.IdMaquina == det.IdMaquina).FirstOrDefault().NombreMaquina : "N/A",
+                        codigo = prod.Codigo,
+                        descripcion = prod.ItemName,
+                        idProducto = int.Parse(det.IdProducto),
+                        idMaquina = det.IdMaquina
+                    });
+                }
             }
-            ViewData["IdArea"] = new SelectList(_context.Flareas, "IdArea", "IdArea", flsolicitud.IdArea);
-            ViewData["IdSolicitante"] = new SelectList(_context.Flusuarios, "IdUsuario", "IdUsuario", flsolicitud.IdSolicitante);
-            ViewData["IdStatus"] = new SelectList(_context.Flstatuses, "IdStatus", "IdStatus", flsolicitud.IdStatus);
-            ViewData["IdTipoSolicitud"] = new SelectList(_context.FltipoSolicituds, "IdTipoSolicitud", "IdTipoSolicitud", flsolicitud.IdTipoSolicitud);
-            return View(flsolicitud);
+            solicitudVm.IdSolicitud = solicitudEncontrada.IdSolicitud;
+            return View(solicitudVm);
         }
 
-        // POST: Flsolicitudes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdSolicitud,Fecha,IdSolicitante,IdTipoSolicitud,IdArea,IdStatus,DocNumErp,Comentarios,Cancelada,Reenviada")] Flsolicitud flsolicitud)
+        public async Task<IActionResult> Editar(SolicitudViewModel flsolicitud)
         {
-            if (id != flsolicitud.IdSolicitud)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(flsolicitud);
+                var solicitudEncontrada = _context.Flsolicituds.FirstOrDefault(x => x.IdSolicitud == flsolicitud.IdSolicitud);
+                var detalleEncontrado = _context.FlsolicitudDets.Where(x => x.IdSolicitud == flsolicitud.IdSolicitud).ToList();
+                
+                    //eliminamos el detalle anterior
+                    _context.FlsolicitudDets.RemoveRange(detalleEncontrado);
+
+                    var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); //Obtener el id de la sesión actual
+
+                    solicitudEncontrada.IdTipoSolicitud = flsolicitud.IdTipoSolicitud;
+                    solicitudEncontrada.IdArea = flsolicitud.IdArea;
+                    solicitudEncontrada.Comentarios = flsolicitud.Comentarios;
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FlsolicitudExists(flsolicitud.IdSolicitud))
+
+                    //Agregamos el nuevo detalle
+                    foreach (var item in flsolicitud.detalle)
                     {
-                        return NotFound();
+                        var idSolicitud = solicitudEncontrada.IdSolicitud;
+                        var idProducto = item.idProducto;
+                        var cantidad = item.cantidad;
+                        var idMaquina = item.idMaquina;
+
+                        var filasAfectadas = await _context.Database.ExecuteSqlRawAsync(
+                            "EXEC [dbo].[spAgregarSolicitudDet] @IdSolicitud, @IdProducto, @cantidad, @IdMaquina",
+                            new SqlParameter("@IdSolicitud", idSolicitud),
+                            new SqlParameter("@IdProducto", idProducto),
+                            new SqlParameter("@cantidad", cantidad),
+                            new SqlParameter("@IdMaquina", idMaquina)
+                        );
                     }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdArea"] = new SelectList(_context.Flareas, "IdArea", "IdArea", flsolicitud.IdArea);
-            ViewData["IdSolicitante"] = new SelectList(_context.Flusuarios, "IdUsuario", "IdUsuario", flsolicitud.IdSolicitante);
-            ViewData["IdStatus"] = new SelectList(_context.Flstatuses, "IdStatus", "IdStatus", flsolicitud.IdStatus);
-            ViewData["IdTipoSolicitud"] = new SelectList(_context.FltipoSolicituds, "IdTipoSolicitud", "IdTipoSolicitud", flsolicitud.IdTipoSolicitud);
-            return View(flsolicitud);
-        }
 
-        // GET: Flsolicitudes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
+                    TempData["guardado"] = "Registro con id: "+solicitudEncontrada.IdSolicitud+" editado correctamente";
+                    return RedirectToAction(nameof(Index));
+            }
+
+            var areas = _context.Flareas.ToList();
+            var tipoSolicitud = _context.FltipoSolicituds
+                .ToList();
+            var estados = _context.Flstatuses.ToList();
+            var maquinas = _context.Flmaquinas.ToList();
+
+            var tipoSolicitudes = new List<TipoSolicitudViewModel>();
+            foreach (var solicitud in tipoSolicitud)
             {
-                return NotFound();
+                var flujo = _context.Flflujos.Find(solicitud.IdFlujo);
+                var mostrarMaquina = flujo.SeeMaquina == 1 ? true : false;
+
+                tipoSolicitudes.Add(new TipoSolicitudViewModel(solicitud, mostrarMaquina));
             }
 
-            var flsolicitud = await _context.Flsolicituds
-                .Include(f => f.IdAreaNavigation)
-                .Include(f => f.IdSolicitanteNavigation)
-                .Include(f => f.IdStatusNavigation)
-                .Include(f => f.IdTipoSolicitudNavigation)
-                .FirstOrDefaultAsync(m => m.IdSolicitud == id);
-            if (flsolicitud == null)
-            {
-                return NotFound();
-            }
-
-            return View(flsolicitud);
-        }
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+            solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = tipoSolicitudes;
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+            return View(solicitudVm);
+        }  
 
         // POST: Flsolicitudes/Delete/5
         [HttpPost, ActionName("Delete")]

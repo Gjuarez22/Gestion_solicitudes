@@ -28,3 +28,22 @@ body {
 .hide{
     display: none;
 }
+
+.badge-success {
+    display: inline-block;
+    padding: 0.50em 0.65em;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    background-color: #198754; /* Verde de Bootstrap */
+}
+
+/* Si necesitas el estilo "pill" (más redondeado) */
+.badge-success-pill {
+    border-radius: 50rem; /* Más redondeado que el normal */
+}
