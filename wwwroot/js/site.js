@@ -17,7 +17,11 @@ async function obtenerVista(url,mensajeNoEncontrado){
         await $.ajax({
             url: url,
             method: 'GET'
+        
+            
         })
+
+
 
 
         .done((respuesta) => {
@@ -53,13 +57,19 @@ async function obtenerVista(url,mensajeNoEncontrado){
 async function EnviarDatosJson(url,datos) {
     
 
+    
+
     try {
+        
+         //console.log(url); 
+         const response = await $.ajax({
         
          //console.log(url); 
          const response = await $.ajax({
             url: url, // Reemplaza por tu ruta real
             type: 'POST',
             contentType: 'application/json',
+            
             
             data: JSON.stringify(datos)
         });
@@ -78,6 +88,8 @@ async function EnviarDatosJson(url,datos) {
         }
     } catch (e) {
         // Si algo falla en la petición
+        //console.log(url);
+        //console.error("Error AJAX:", e);
         //console.log(url);
         //console.error("Error AJAX:", e);
         return {

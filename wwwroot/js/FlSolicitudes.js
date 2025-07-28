@@ -38,6 +38,7 @@ $(document).ready(function() {
         $("#cuerpoModal").html(html);
         $("#modalGeneral").modal('show');
         $("#modalGeneraltitulo").text('Detalle de solicitud');
+        $("#modalGeneraltitulo").text('Detalle de solicitud');
 
     });
 

@@ -19,6 +19,12 @@ namespace GestionSolicitud.Models
                 entity.HasNoKey();
                 entity.ToView(null);
             });
+            
+            modelBuilder.Entity<SpBuscarAutocompletado>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null);
+            });
         }
 
         public List<SpListadoSoliciturdes> spListadoSoliciturdes(int idUsuario, int idRol)

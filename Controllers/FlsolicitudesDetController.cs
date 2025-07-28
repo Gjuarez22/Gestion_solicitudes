@@ -1,4 +1,4 @@
-﻿using GestionSolicitud.Models;
+using GestionSolicitud.Models;
 using GestionSolicitud.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

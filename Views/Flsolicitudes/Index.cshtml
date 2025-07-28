@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
 @using System.Security.Claims
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Solicitudes";
 }
@@ -9,14 +10,22 @@
     
 }
 
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    
+}
+
 <div class="table-responsive">
 
+
 <table class="table table-bordered table-hover" id ="tabla-solicitudes">
+   
    
     <thead>
         <tr>
             <th>
                 Id
+            </th> 
             </th> 
             <th>
                 Tipo Solicitud
@@ -27,6 +36,7 @@
             <th>
                 DocNump
             </th>
+         
          
             <th>
                 Comentarios
@@ -61,6 +71,7 @@
                 @item.DocNum
             </td>
       
+      
             <td>
                 @item.Comentarios
             </td>
@@ -86,7 +97,12 @@
                     @if (User.IsInRole("Administrador"))
                     {
                         <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
+                        <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
                         <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
+                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
+                        
                         <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
                         <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
                         <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
@@ -108,10 +124,15 @@
                         <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
                         <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
                        
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
+                       
                     }else if(User.IsInRole("EncargadoBodega")){
 
                         <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
+                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
                     }
+                    
                     
                 </ul>
             </td>
@@ -144,6 +165,8 @@
   </div>
 </div>
 @**************************************************FIN MODAL****************************************@
+
+
 
 
 

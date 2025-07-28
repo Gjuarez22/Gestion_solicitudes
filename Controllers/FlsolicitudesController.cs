@@ -85,7 +85,9 @@ namespace GestionSolicitud.Controllers
                 .Include(f => f.IdTipoSolicitudNavigation)
                 .Include(f => f.FlsolicitudDets)
                 
+                
                 .FirstOrDefaultAsync(m => m.IdSolicitud == id);
+
 
             if (flsolicitud == null)
             {
@@ -129,13 +131,57 @@ namespace GestionSolicitud.Controllers
            // solicitudVm.Productos = new SelectList(productos, "Codigo", "ItemName");
             return View(solicitudVm);
         }
+        
+        // GET: Flsolicitudes/Create
+        /* es Wendy?
+        public IActionResult CrearDetalle(int idSolicitud)
+        {
+            var areas = _context.Flareas.ToList();          
+            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+         //  var estados = _context.Flstatuses.ToList();
 
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+           // solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+
+          //  var productos = _context.VwProductos.ToList();
+            //var producto = _context.VwProductos.ToListAsync();
+            //solicitudVm.Productos = new SelectList(producto, "Codigo", "ItemName");
+           // solicitudVm.Productos = new SelectList(productos, "Codigo", "ItemName");
+            return View(solicitudVm);
+        }*/
+           
+        // GET: Flsolicitudes/Create
+        public IActionResult CrearDetalle(int idSolicitud)
+        {
+            var areas = _context.Flareas.ToList();          
+            var tipoSolicitudes = _context.FltipoSolicituds.ToList();
+         //  var estados = _context.Flstatuses.ToList();
+
+            var solicitudVm = new SolicitudViewModel();
+            solicitudVm.Areas = new SelectList(areas, "IdArea", "NombreArea");
+           // solicitudVm.Estados = new SelectList(estados, "IdStatus", "NombreStatus");
+            solicitudVm.TiposSolicitud = new SelectList(tipoSolicitudes, "IdTipoSolicitud", "NombreTipoSolicitud");
+            solicitudVm.Maquinas = new SelectList(maquinas, "IdMaquina", "NombreMaquina");
+
+          //  var productos = _context.VwProductos.ToList();
+            //var producto = _context.VwProductos.ToListAsync();
+            //solicitudVm.Productos = new SelectList(producto, "Codigo", "ItemName");
+           // solicitudVm.Productos = new SelectList(productos, "Codigo", "ItemName");
+            return View(solicitudVm);
+        }
+
+        [HttpPost]                                                                                                                                                                                                             
+        [ValidateAntiForgeryToken] 
         [HttpPost]                                                                                                                                                                                                             
         [ValidateAntiForgeryToken] 
         public async Task<IActionResult> Create( SolicitudViewModel flsolicitud)
         {
             if (ModelState.IsValid)
             {
+                
                 
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); //Obtener el id de la sesión actual
 
@@ -193,6 +239,7 @@ namespace GestionSolicitud.Controllers
             }
             return View(flsolicitud);
         }
+                  
                   
         // GET: Flsolicitudes/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -267,6 +314,7 @@ namespace GestionSolicitud.Controllers
                 .Include(f => f.IdTipoSolicitudNavigation)
                 .FirstOrDefaultAsync(m => m.IdSolicitud == id);
 
+
             if (flsolicitud == null)
             {
                 return NotFound();
@@ -296,6 +344,7 @@ namespace GestionSolicitud.Controllers
         }
 
 
+        [Authorize(Roles = "Solicitante")]
         [Authorize(Roles = "Solicitante")]
         [HttpPost]
         public async Task<JsonResult> Recibio([FromBody] int id)
@@ -492,9 +541,111 @@ namespace GestionSolicitud.Controllers
         [Authorize(Roles = "Autorizador")]
         [HttpPost]
         public async Task<JsonResult> Rechazo([FromBody] DatosAutorizacion_rec datos)
+        public async Task<JsonResult> Rechazo([FromBody] DatosAutorizacion_rec datos)
         {
             //id de la solicitud
             var solicitud = await _context.Flsolicituds
+                .FindAsync(datos.Id); //Buscamos la solicuitud para obtener el di del estado
+
+            using var conn = _context.Database.GetDbConnection();
+            using var command = conn.CreateCommand();
+
+            command.CommandText = "spAutorizacion_rec";
+            command.CommandType = CommandType.StoredProcedure;
+
+            // Función local para crear parámetros
+            void AddParam(string name, object value, DbType? dbType = null, ParameterDirection direction = ParameterDirection.Input, int size = 0)
+            {
+                var p = command.CreateParameter();
+                p.ParameterName = name;
+                p.Value = value ?? DBNull.Value;
+                p.Direction = direction;
+                if (dbType.HasValue) p.DbType = dbType.Value;
+                if (size > 0) p.Size = size;
+                command.Parameters.Add(p);
+            }
+
+            // Parámetros
+            AddParam("@IdSolicitud", datos.Id.ToString());
+            AddParam("@Estatus", solicitud.IdStatus);
+            AddParam("@Usuario", datos.IdUsuario);
+            AddParam("@Plataforma", "WEB");
+            AddParam("@Email", "NO");
+            AddParam("@Mensaje", "", DbType.String, ParameterDirection.Output, 250);
+            AddParam("@CodigoResultado", 0, DbType.Int32, ParameterDirection.Output);
+
+            await conn.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            string mensaje = command.Parameters["@Mensaje"].Value?.ToString();
+            int codigoResultado = Convert.ToInt32(command.Parameters["@CodigoResultado"].Value);
+
+            return Json(new
+            {
+                success = true,
+                message = mensaje,
+                codigoResultado
+            });
+
+            /*int filasAfectadas = await _context.Database.ExecuteSqlRawAsync("EXEC spAutorizacion_aut @IdSolicitud = {0}, @Estatus = {1}, @Usuario = {2}, @Plataforma = {3} ",
+                  datos.Id, solicitud.IdStatus, datos.IdUsuario, "WEB"); //Ejecuta el sp de spAutorizacion
+            
+               
+            return Json(new { success = true, message = "Solicitud: "+ datos.Id +" autorizada correctamente." });*/
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> cancelar([FromBody] DatosAutorizacion_rec datos)
+        {
+            //id de la solicitud
+            var solicitud = await _context.Flsolicituds
+                .FindAsync(datos.Id); //Buscamos la solicuitud para obtener el di del estado
+
+            using var conn = _context.Database.GetDbConnection();
+            using var command = conn.CreateCommand();
+
+            command.CommandText = "spSolicitud_cancel";
+            command.CommandType = CommandType.StoredProcedure;
+
+            // Función local para crear parámetros
+            void AddParam(string name, object value, DbType? dbType = null, ParameterDirection direction = ParameterDirection.Input, int size = 0)
+            {
+                var p = command.CreateParameter();
+                p.ParameterName = name;
+                p.Value = value ?? DBNull.Value;
+                p.Direction = direction;
+                if (dbType.HasValue) p.DbType = dbType.Value;
+                if (size > 0) p.Size = size;
+                command.Parameters.Add(p);
+            }
+
+            // Parámetros
+            AddParam("@IdSolicitud", datos.Id.ToString());
+            AddParam("@Estatus", solicitud.IdStatus);
+            AddParam("@Usuario", datos.IdUsuario);
+            AddParam("@Comentario", "--");
+            AddParam("@Mensaje", "", DbType.String, ParameterDirection.Output, 250);
+            AddParam("@CodigoResultado", 0, DbType.Int32, ParameterDirection.Output);
+
+            await conn.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            string mensaje = command.Parameters["@Mensaje"].Value?.ToString();
+            int codigoResultado = Convert.ToInt32(command.Parameters["@CodigoResultado"].Value);
+
+            return Json(new
+            {
+                success = true,
+                message = mensaje,
+                codigoResultado
+            });
+
+            /*int filasAfectadas = await _context.Database.ExecuteSqlRawAsync("EXEC spAutorizacion_aut @IdSolicitud = {0}, @Estatus = {1}, @Usuario = {2}, @Plataforma = {3} ",
+                  datos.Id, solicitud.IdStatus, datos.IdUsuario, "WEB"); //Ejecuta el sp de spAutorizacion
+
+            return Json(new { success = true, message = "Solicitud: "+ datos.Id +" autorizada correctamente." });*/
+
                 .FindAsync(datos.Id); //Buscamos la solicuitud para obtener el di del estado
 
             using var conn = _context.Database.GetDbConnection();

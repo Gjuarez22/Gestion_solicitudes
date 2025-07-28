@@ -230,6 +230,8 @@ public partial class DbFlujosTestContext : DbContext
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_FLRolUsuario_FLRol"),
                     j =>
                     {

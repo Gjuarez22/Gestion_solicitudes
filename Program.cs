@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using GestionSolicitud.DTESupplier.Logica;
 using GestionSolicitud.HelperClasses;
+using GestionSolicitud.DTESupplier.Logica;
+using GestionSolicitud.HelperClasses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,11 +21,15 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<SapGoodsIssueCreator>();
 builder.Services.AddScoped<MiServicio>();
 
+builder.Services.AddScoped<SapGoodsIssueCreator>();
+builder.Services.AddScoped<MiServicio>();
+
 
 // Agrega esto antes de builder.Build():
 builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation(); 
 
+// Configurar autenticación con cookies
 // Configurar autenticación con cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -83,6 +89,17 @@ if (!app.Environment.IsDevelopment())
         });
     });
 
+    // ✅ Muestra error directo en navegador (más útil para depuración)
+    app.UseExceptionHandler(errorApp =>
+    {
+        errorApp.Run(async context =>
+        {
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "text/plain";
+            await context.Response.WriteAsync("⚠️ Error interno en el servidor.");
+        });
+    });
+
     app.UseHsts();
 }
 
@@ -99,5 +116,7 @@ app.MapControllerRoute(
     pattern: "{controller=Ingreso}/{action=Login}/{id?}");
 
 app.Run();
+
+
 
 
