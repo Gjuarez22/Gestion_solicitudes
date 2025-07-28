@@ -1,16 +1,23 @@
 ﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
-
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Solicitudes";
 }
 
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    
+}
+
 <div class="table-responsive">
+
 <table class="table table-bordered table-hover" id ="tabla-solicitudes">
+   
     <thead>
         <tr>
             <th>
                 Id
-            </th>
+            </th> 
             <th>
                 Tipo Solicitud
             </th>
@@ -20,9 +27,7 @@
             <th>
                 DocNump
             </th>
-            <th>
-                Creada
-            </th>
+         
             <th>
                 Comentarios
             </th>
@@ -55,9 +60,7 @@
             <td>
                 @item.DocNum
             </td>
-            <td>
-                @item.Comentarios
-            </td>
+      
             <td>
                 @item.Comentarios
             </td>
@@ -77,27 +80,39 @@
                 <ul class="dropdown-menu dropdown-menu">
                     @*TODOS TIENEN ACCESO A ESTOS BOTONES*@
                     <li><a class="dropdown-item verDetalle" data-id="@item.Id" >Ver Detalle</a></li>
-                    <li><a class="dropdown-item verAuditoria" data-id="@item.Id" href="#">Ver auditoria</a></li>
+                    <li><a class="dropdown-item verAuditoria" data-id="@item.Id" >Ver auditoria</a></li>
+                    
+                    
                     @if (User.IsInRole("Administrador"))
                     {
+                        <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
                         <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
-                        <li><a class="dropdown-item autorizar"  data-id="@item.Id"  href="#">Autorizar</a></li>
-                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
-                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
+                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
+                        
                     
                     }else if(User.IsInRole("Solicitante")){
                      
                         <li><a class="dropdown-item recibio" data-id="@item.Id" href="#">Recibido</a></li>
+                        <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
+                       
+                        @if (@item.Estado == "Preliminar")
+                        {
+                            //solo para estado pre para poder anular esas solicitudes que quedan en vacio por el usuario 
+                            <li><a class="dropdown-item cancelar" data-id="@item.Id" data-userid="@userId" href="#">Cancelar</a></li>
+                        }
                     
                     }else if(User.IsInRole("Autorizador")){
                     
-                        <li><a class="dropdown-item autorizar"  data-id="@item.Id"  href="#">Autorizar</a></li>
-                        <li><a class="dropdown-item" href="#">Rechazar</a></li>
-                    
+                        <li><a class="dropdown-item autorizar"  data-id="@item.Id" data-userid="@userId" href="#">Autorizar</a></li>
+                        <li><a class="dropdown-item rechazar" data-id="@item.Id" data-userid="@userId" href="#">Rechazar</a></li>
+                       
                     }else if(User.IsInRole("EncargadoBodega")){
 
-                        <li><a class="dropdown-item" href="#">Entregar</a></li>
+                        <li><a class="dropdown-item entregar" data-id="@item.Id" data-userid="@userId" href="#">Entregar</a></li>
                     }
+                    
                 </ul>
             </td>
         </tr>
@@ -131,5 +146,6 @@
 @**************************************************FIN MODAL****************************************@
 
 
-//TODO : Continuar con la funcionalidad de los botones
+
+
 <script src="~/js/FlSolicitudes.js"></script>

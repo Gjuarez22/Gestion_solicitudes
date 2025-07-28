@@ -1,0 +1,79 @@
+﻿@model GestionSolicitud.Models.Flsolicitud
+
+@{
+    ViewData["Title"] = "SALIDA DE MERCANCIA";
+}
+
+
+<div class="container-fluid">
+<table >
+     <thead>
+        <tr>
+            <th class="col-izq"></th>
+            <th class="col-centro">
+                <h2>SALIDA DE MERCANCIA @Model.DocNumErp </h2> <br />
+                <h5>Lista de precios: Último precio de compra </h5>
+            </th>
+            <th class="col-derecha">
+                @{
+                    var fecha = DateTime.TryParse(@Model.Fecha.ToString(), out DateTime dt) ? dt : DateTime.Now;
+                }
+                Fecha: @fecha.ToString("dd/MM/yyyy") <br />
+                Hora: @fecha.ToString("hh:mm:ss tt") <br />
+                Original
+            </th>
+        </tr>
+    </thead>
+</table>
+
+@if (Model.FlsolicitudDets != null && Model.FlsolicitudDets.Any())
+{
+    <table class="tabla-salida">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Num. artículo</th>
+                <th>Descripción</th>
+                <th>Unidad medida</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Ctd. (UM inventario)</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int contador = 1;
+                decimal totalGeneral = 0;
+            }
+            @foreach (var item in Model.FlsolicitudDets)
+            {
+                Console.WriteLine("Imprimiendo Valores...");
+                Console.WriteLine(item.descripcionProducto);
+                Console.WriteLine("Listo...");
+            <tr>
+                    <td>@contador</td>
+                    <td>@item.IdProducto</td>
+                    <td>@item.descripcionProducto</td>
+                    <td>@item.Umedida</td>
+                    <td>@item.Cantidad</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                contador++;
+            
+            }
+        
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6"></td>
+                <td >Total</td>
+                <td>0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+</div>

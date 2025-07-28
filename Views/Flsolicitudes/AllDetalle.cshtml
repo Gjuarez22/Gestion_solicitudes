@@ -1,0 +1,33 @@
+﻿@model GestionSolicitud.Models.Flsolicitud
+
+@if (Model.FlsolicitudDets == null || !Model.FlsolicitudDets.Any())
+{
+    <div class="text-muted">No hay productos en esta solicitud.</div>
+}
+else
+{
+    <div class="table-responsive">
+       
+        <table class="table table-sm table-bordered mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Ubicación</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model.FlsolicitudDets)
+                {
+                    <tr>
+                        <td>@d.IdProducto</td>
+                        <td>@d.descripcionProducto</td>
+                        <td>@d.UbicacionProducto</td>
+                        <td>@d.Cantidad</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

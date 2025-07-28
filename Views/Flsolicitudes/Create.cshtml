@@ -25,7 +25,16 @@
                 </select>
                 <span asp-validation-for="IdArea" class="text-danger"></span>
             </div>
-
+@*
+            <div class="col-md-6"></div>
+                <label asp-for="Codigo" class="form-label">Producto</label>
+                <select asp-for="Codigo" class="form-select" asp-items="Model.Productos">
+                    <option value="">-- Seleccionar --</option>
+                </select>
+                <span asp-validation-for="Codigo" class="text-danger"></span>
+            </div>
+*@
+@*
             <!-- Status -->
             <div class="col-md-6">
                 <label asp-for="IdStatus" class="form-label">Estado</label>
@@ -34,6 +43,7 @@
                 </select>
                 <span asp-validation-for="IdStatus" class="text-danger"></span>
             </div>
+            
 
             <!-- DocNumERP -->
             <div class="col-md-6">
@@ -41,6 +51,7 @@
                 <input asp-for="DocNumErp" class="form-control" />
                 <span asp-validation-for="DocNumErp" class="text-danger"></span>
             </div>
+           *@ 
 
             <!-- Comentarios -->
             <div class="col-12">
@@ -53,7 +64,7 @@
         <!-- Botones -->
         <div class="mt-4">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Guardar
+                <i class="fas fa-save"></i> Siguiente
             </button>
             <a asp-action="Index" class="btn btn-secondary ms-2">
                 <i class="fas fa-arrow-left"></i> Volver

@@ -86,9 +86,11 @@
                                 <table class="table table-sm table-hover" id="tablaDetalles">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Descripción</th>
+                                            <th>Codigo </th>
+                                            <th>Descripcion  </th>
                                             <th>Cantidad</th>
-                                            <th>Observaciones</th>
+                                            <th>Unidad Medida</th>
+                                            <th>Ubicacion</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -96,8 +98,11 @@
                                         {
                                             <tr>
                                                 <td>@detalle.IdProducto</td>
+                                                <td>@detalle.descripcionProducto</td>
                                                 <td>@detalle.Cantidad</td>
-                                                <td>@(detalle.ComentariosDet ?? "N/A")</td>
+                                                <td>@detalle.Umedida</td>
+                                                <td>@detalle.UbicacionProducto</td>
+                                                @*<td>@(detalle.ComentariosDet ?? "N/A")</td>*@
                                             </tr>
                                         }
                                     </tbody>
@@ -121,6 +126,7 @@
             case "CANCELADA": return "dark";
             case "EN_PROCESO": return "warning text-dark";
             default: return "secondary";
+            
         }
     }
 }
@@ -129,11 +135,11 @@
 
 $(document).ready(function() {
     $("#tablaDetalles").DataTable({
-        "pageLength": 3,  // Muestra 5 registros por página 
+        "pageLength": 5,  // Muestra 5 registros por página 
         "lengthChange": false,    // Oculta el dropdown para cambiar cantidad
-        "language": {
+        /*"language": {
             "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
-        }
+        }*/
     })
 });
 

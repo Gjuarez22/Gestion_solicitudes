@@ -1,0 +1,176 @@
+﻿@model IEnumerable<GestionSolicitud.Models.SpListadoSoliciturdes>
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Solicitudes Masivas";
+}
+@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="table-responsive">
+
+        <br>
+     <button id="btnProcesarSeleccionados" class="btn btn-primary mb-2">Procesar seleccionados</button>
+        <br>
+        
+
+
+    <table class="table table-bordered table-hover" id="tabla-solicitudes">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll"  /></th>
+                <th>Id</th>
+                <th>Tipo Solicitud</th>
+                <th>Fecha Creación</th>
+                <th>DocNum</th>
+                <th>Comentarios</th>
+                <th>Solicitante</th>
+                <th>Área</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="fila-principal" data-id="@item.Id">
+                    <td><input type="checkbox" class="check-item" value="@item.Id"  data-estado="@item.Estado"/></td>
+                    <td>@item.Id</td>
+                    <td>@item.tipoDeSolicitud</td>
+                    <td>@item.Creada</td>
+                    <td>@item.DocNum</td>
+                    <td>@item.Comentarios</td>
+                    <td>@item.Solicitante</td>
+                    <td>@item.Area</td>
+                    <td>@item.Estado</td>
+                </tr>
+              
+                <tr class="fila-detalle" id="detalle-@item.Id" style="display: none;">
+                    <td colspan="999">
+                        <div class="detalle-contenido p-2 border bg-light rounded text-center">
+                            <i class="bi bi-arrow-repeat spinner-border text-secondary"></i> Cargando productos...
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@*/******************************   MODAL  ***************************************/ *@
+
+<div class="modal fade" id="modalGeneral" tabindex="-1" aria-labelledby="modalGeneralLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered modal-xl"> @**Aca se ajusta el tamaño del modal**@
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalGeneraltitulo">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="cuerpoModal">
+        @*********************CUERPO DEL MODAL*******************************@
+
+            
+        @*********************FIN DEL MODAL*******************************@
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cerrarModal" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary hide" id="btnGuardarModal">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+@* /*********************************************************************/ *@
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        // Seleccionar todos
+        $("#selectAll").on("change", function () {
+            $(".check-item").prop("checked", this.checked);
+        });
+
+        // Al hacer clic en una fila (excepto en checkbox)
+        $(".fila-principal").on("click", function (e) {
+            if ($(e.target).is("input[type=checkbox]")) return; // Ignora clic en checkbox
+
+            var id = $(this).data("id");
+            var filaDetalle = $("#detalle-" + id);
+            var contenido = filaDetalle.find(".detalle-contenido");
+
+            console.log("prueba de acordeon");
+            // Ocultar otras filas detalle
+            $(".fila-detalle").not(filaDetalle).hide();
+            console.log("prueba de acordeon 2");
+            if (filaDetalle.is(":visible")) {
+                console.log("prueba visible");
+                filaDetalle.hide();
+            } else {
+               if (contenido.html().includes("Cargando")) {
+                    console.log("prueba de cargando datos");
+                    $.get("/Flsolicitudes/AllDetalle/" + id, function (data) {
+                        console.log(data);
+                        contenido.html(data);
+                    });
+                }
+                filaDetalle.show();
+            }
+        });
+
+        $("#btnProcesarSeleccionados").on("click", function () {
+        console.log("Botón de proceso masivo presionado");
+
+        var idsSeleccionados = $(".check-item:checked").map(function () {
+            //return $(this).val();
+            return {
+                id: parseInt($(this).val()),
+                estado: $(this).data("estado")
+            }
+        }).get();
+
+        console.log("IDs seleccionados:", idsSeleccionados);
+
+        if (idsSeleccionados.length === 0) {
+            alert("Debe seleccionar al menos una solicitud.");
+            return;
+        }
+
+        $.ajax({
+            url: '/Flsolicitudes/AllAutorizar',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(idsSeleccionados),
+            success: function (response) {
+                //alert("SP ejecutado correctamente para los seleccionados.");
+                console.log("Respuesta del backend:", response);
+
+                // Insertar contenido dinámico
+                document.getElementById('modalGeneraltitulo').innerText = 'Respuesta del Servicio';
+                //document.getElementById('cuerpoModal').innerHTML = `<pre>${JSON.stringify(response, null, 2)}</pre>`;
+                document.getElementById('cuerpoModal').innerHTML = response.mensaje ?? "Solicitudes Procesadas";
+
+                // Mostrar el modal
+                var modal = new bootstrap.Modal(document.getElementById('modalGeneral'));
+                modal.show();
+
+            },
+            error: function (xhr) {
+                alert("Error al ejecutar el SP Aurotizacion por Lote.");
+                console.error("Error del backend:", xhr.responseText);
+            }
+        });
+    });
+
+        // Refrescar la página al cerrar al modal
+        document.getElementById('modalGeneral').addEventListener('hidden.bs.modal', function () {
+            location.reload();
+        });
+});
+
+
+</script>

@@ -1,55 +1,70 @@
-﻿@model GestionSolicitud.Models.Flauditorium
+﻿@model List<GestionSolicitud.Models.Flauditorium>
+
+<!-- Encabezado -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Información Básica</h6>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Id Solicitud :</dt>
+                            <dd class="col-sm-7">
+                                @if (Model.Any())
+                                    {
+                                     @Model.First().IdSolicitud
+                                    }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
 
 
-
-<div class="container">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Registro #@Model.IdAuditoria</h4>
-        </div>
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">
-                    Id de la auditoria
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.IdAuditoria)
-                </dd>
-
-                <dt class="col-sm-3">
-                    Id de la solicitud
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.IdSolicitud)
-                </dd>
-
-                <dt class="col-sm-3">
-                        Estado
-                </dt>
-                <dd class="col-sm-9">
-                    @ViewBag.estado.NombreStatus
-                </dd>
-
-                <dt class="col-sm-3">
-                    Fecha de la auditoria
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Fecha)
-                </dd>
-
-                <dt class="col-sm-3">
-                    Usuario
-                </dt>
-                <dd class="col-sm-9">
-                    @ViewBag.usuario.Nombre
-                </dd>
-
-                <dt class="col-sm-3">
-                    Notas
-                </dt>
-                <dd class="col-sm-9">
-                    @Html.DisplayFor(model => model.Notas)
-                </dd>
-            </dl>
-        </div>
+<div class="row mt-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                            <table  id="tablaAuditoria">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Codigo </th>
+                                            <th>Estado </th>
+                                            <th>Usuario </th>
+                                            <th>Fecha </th>
+                                            <th>Notas </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var items in Model)
+                                        {
+                                                <tr>
+                                                <td>@items.IdAuditoria</td>
+                                                <td>@items.Estatus</td>
+                                                <td>@items.Ususario_</td>
+                                                <td>@items.Fecha</td>
+                                                <td>@items.Notas</td>
+                                                                    
+                                                </tr>
+                                            }
+                                                         
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 </div>
+<script>
+
+$(document).ready(function() {
+    $("#tablaAuditoria").DataTable({
+        "pageLength": 10,  // Muestra 5 registros por página 
+        "lengthChange": false,    // Oculta el dropdown para cambiar cantidad
+         "order": [[0, 'desc']],
+        //"language": {
+        //    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        //}
+    })
+});
+
+</script>

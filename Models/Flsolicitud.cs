@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace GestionSolicitud.Models;
@@ -36,4 +37,6 @@ public partial class Flsolicitud
     public virtual Flstatus? IdStatusNavigation { get; set; }
 
     public virtual FltipoSolicitud? IdTipoSolicitudNavigation { get; set; }
+
+   
 }

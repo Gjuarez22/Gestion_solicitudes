@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestionSolicitud.Models;
 
@@ -20,4 +21,10 @@ public partial class FlsolicitudDet
     public virtual Flmaquina IdMaquinaNavigation { get; set; } = null!;
 
     public virtual Flsolicitud IdSolicitudNavigation { get; set; } = null!;
+
+    [NotMapped]
+    public string? descripcionProducto { get; set; }
+
+    [NotMapped]
+    public string? UbicacionProducto { get; set; }
 }

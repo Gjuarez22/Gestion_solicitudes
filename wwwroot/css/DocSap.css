@@ -1,0 +1,62 @@
+/* Asegura que html y body ocupen toda la altura */
+html, body {
+    height: 100%;
+    margin: 1;
+    padding: 1;
+}
+
+
+.tabla-salida {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+    .tabla-salida th,
+    .tabla-salida td {
+        border: 1px solid #000;
+        padding: 5px 10px;
+        text-align: left;
+    }
+
+    .tabla-salida th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    .tabla-salida tfoot td {
+        font-weight: bold;
+        text-align: right;
+    }
+
+
+.col-izq {
+    width:9%;
+    
+}
+
+.col-centro {
+    text-align: center;
+    width: 77.5%;
+    font-size: 15;
+}
+
+    .col-centro h2 {
+        margin-bottom: 2px;
+    }
+
+    .col-centro h2, 
+    .col-centro h5 {
+        margin: 4;
+        padding: 0;
+    }
+
+    
+.col-derecha {
+    text-align: right;
+    width: 20;
+    vertical-align: text-top;
+    font-size: 15px;
+}

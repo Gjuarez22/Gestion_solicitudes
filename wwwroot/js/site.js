@@ -18,6 +18,8 @@ async function obtenerVista(url,mensajeNoEncontrado){
             url: url,
             method: 'GET'
         })
+
+
         .done((respuesta) => {
             html = respuesta;
         })
@@ -31,10 +33,13 @@ async function obtenerVista(url,mensajeNoEncontrado){
                 html = '<div/>'+mensajeNoEncontrado+'<div>';
 
             }else{
-                html = '<div/>Estamos teniendo problemas para mostrar esta vista :c <div>';
+                html = '<div/>Estamos teniendo problemas para mostrar esta vista :c ...<div>';
             }
         })
         .always(() => {
+            console.log('entro en el js site..');
+            console.log(url);
+            console.log(html);
             console.log('Petición completada');
         });
     } catch (error) {
@@ -46,12 +51,16 @@ async function obtenerVista(url,mensajeNoEncontrado){
 
 
 async function EnviarDatosJson(url,datos) {
+    
+
     try {
-        console.log(datos);
-        const response = await $.ajax({
+        
+         //console.log(url); 
+         const response = await $.ajax({
             url: url, // Reemplaza por tu ruta real
             type: 'POST',
             contentType: 'application/json',
+            
             data: JSON.stringify(datos)
         });
 
@@ -69,7 +78,8 @@ async function EnviarDatosJson(url,datos) {
         }
     } catch (e) {
         // Si algo falla en la petición
-        console.error("Error AJAX:", e);
+        //console.log(url);
+        //console.error("Error AJAX:", e);
         return {
             success: false,
             message: "Error en la solicitud: " + e.message
